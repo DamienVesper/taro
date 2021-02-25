@@ -52,11 +52,12 @@ const server = config.mode === `dev`
         rejectUnauthorized: false
     }, app);
 
+logASCII();
+logHeader();
+
 // Bind the webfront to defined port.
 server.listen(config.webfront.port);
 log(`green`, `Webfront bound to port ${config.webfront.port}.`);
-logASCII();
-logHeader();
 
 // Export the local server for socket.io.
 module.exports = {
