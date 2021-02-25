@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Cabin');
+
 html {
-    -webkit-user-select: none;
+    user-select: none;
 }
+
 body {
-    font-family: 'Cabin', 'arial', serif !important ;
+    font-family: 'Cabin', 'arial', serif !important;
 }
 
 @font-face {
@@ -14,6 +16,7 @@ body {
 .d-none-important {
     display: none !important;
 }
+
 .mt-10 {
     margin-top: 10;
 }
@@ -26,18 +29,22 @@ body {
     padding: 10px;
     font-size: 24px;
 }
+
 .dark-bg {
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 5px;
     padding: 10px;
 }
+
 .item-shop-button {
     min-height: 100px;
 }
+
 .margin-top-4 {
     margin-top: 8;
 }
+
 .backpack-ui {
     position: absolute;
     bottom: 10;
@@ -107,41 +114,52 @@ body {
     width: 35px;
     height: 35px;
 }
+
 .popover {
     z-index: 10000;
 }
+
 .bg-light-green {
     background-color: rgba(40, 167, 69, 0.3);
 }
+
 .bg-light-red {
     background-color: rgba(220, 53, 69, 0.3);
 }
+
 .col-sm-2-5 {
     width: 20%;
 }
+
 .item-shop-button {
     min-height: 100px;
 }
+
 .modal {
     z-index: 99999;
 }
+
 .swal2-container.swal2-shown {
     z-index: 100000;
 }
+
 .game-ui {
     z-index: 1000;
     color: white;
     margin: 10px;
     display: none;
 }
+
 .score-div {
     text-align: right;
 }
+
 #unit-status {
     bottom: 10;
     left: 50%;
     transform: translateX(-50%);
 }
+
 .cursor-pointer {
     cursor: pointer;
 }
