@@ -4,7 +4,7 @@
   "description": "A 2D game engine.",
   "main": "index.js",
   "scripts": {
-    "dev": "node ./index.js",
+    "dev": "cross-env NODE_ENV=\"dev\" node ./index.js",
     "dev:lint": "eslint . --fix --ext .js"
   },
   "repository": {
