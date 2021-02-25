@@ -20,5 +20,22 @@
   "bugs": {
     "url": "https://github.com/DamienVesper/taro/issues"
   },
-  "homepage": "https://github.com/DamienVesper/taro#readme"
+  "homepage": "https://github.com/DamienVesper/taro#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bad-words": "^3.0.2",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "helmet": "^4.4.1",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lz-string": "^1.4.4",
+    "path": "^0.12.7",
+    "socket.io": "^3.1.1",
+    "xss-filters": "^1.2.7"
+  }
 }
