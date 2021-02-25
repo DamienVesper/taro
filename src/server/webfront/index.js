@@ -36,13 +36,10 @@ app.set(`views`, path.resolve(__dirname, `./views`));
 app.set(`view engine`, `ejs`);
 
 // Serve the static directory.
-app.use(`/`, express.static(config.staticDir));
+app.use(`/`, express.static(config.webfront.staticDir));
 
 // Use routes.
-const apiRouter = require(`./routes/api.js.js`);
-const indexRouter = require(`./routes/index.js.js`);
-
-app.use(`/api`, apiRouter);
+const indexRouter = require(`./routes/index.js`);
 app.use(`/`, indexRouter);
 
 // Create the webfront.
@@ -56,8 +53,8 @@ const server = config.mode === `dev`
     }, app);
 
 // Bind the webfront to defined port.
-server.listen(config.port);
-log(`green`, `Webfront bound to port ${config.port}.`);
+server.listen(config.webfront.port);
+log(`green`, `Webfront bound to port ${config.webfront.port}.`);
 logASCII();
 logHeader();
 
