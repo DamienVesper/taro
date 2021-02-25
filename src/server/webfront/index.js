@@ -6,9 +6,9 @@ const path = require(`path`);
 const fs = require(`fs`);
 
 // Utilities
-const log = require(`../../utils/log.js`);
-const logASCII = require(`../../utils/logASCII.js`);
-const logHeader = require(`../../utils/logHeader.js`);
+const log = require(`../utils/log.js`);
+const logASCII = require(`../utils/logASCII.js`);
+const logHeader = require(`../utils/logHeader.js`);
 
 // HTTP / HTTPS transport protocols.
 const http = require(`http`);
