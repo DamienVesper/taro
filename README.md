@@ -49,7 +49,7 @@ npm run dev --game=<gameID>
 If the game ID is not provided, then the engine will use the local game.json file instead.
 Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
 
-<img src="./src/client/assets/img/gameID.png" width="600" alt="How to get the Game ID">
+<img src="./src/client/assets/img/gameID.png" width="600" alt="How to get fthe Game ID">
 
 ## Quick start example - Run "Two Houses" locally
 
@@ -72,4 +72,4 @@ Please visit [our tutorials](https://www.modd.io/tutorials) for more information
 We are always looking for more developers to help us. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K) If you find yourself enjoying working with us, then we should seriously consider working together.
 
 Taro is completely free and open source under the MIT license.
-Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016.
+It was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016.
