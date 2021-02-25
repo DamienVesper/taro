@@ -11,7 +11,7 @@ const cluster = require('cluster');
 const { RateLimiterMemory } = require('rate-limiter-flexible');
 _ = require('lodash');
 
-const config = require('../config');
+const config = require('../../config');
 const { FILE } = require('dns');
 const Console = console.constructor;
 // redirect global console object to log file
