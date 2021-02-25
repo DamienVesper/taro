@@ -1,7 +1,7 @@
 require(`dotenv`).config();
 
 // Configuration.
-const config = require(`./config.js`);
+const config = require(`../../config/config.js`);
 const path = require(`path`);
 const fs = require(`fs`);
 
