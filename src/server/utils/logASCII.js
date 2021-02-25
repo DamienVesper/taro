@@ -1,4 +1,4 @@
-const pjson = require(`../../package.json`);
+const pjson = require(`../../../package.json`);
 module.exports = () => {
     console.log(`\x1b[34m`, `
 
