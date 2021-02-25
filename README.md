@@ -1,16 +1,23 @@
 <p align="center">
   <a href="https://modd.io">
-    <img src="logo.png" width="400" alt="Taro Engine logo">
+    <img src="./src/client/assets/img/taroLogo.png" width="400" alt="Taro Engine logo">
   </a>
+</p>
+<br>
+<p align="center">
+    <img src="https://img.shields.io/github/v/release/DamienVesper/taro?style=for-the-badge&color=1e90ff">
+    <img src="https://img.shields.io/github/languages/code-size/DamienVesper/taro?style=for-the-badge&color=1e90ff">
+    <img src="https://img.shields.io/github/contributors/DamienVesper/taro?style=for-the-badge&color=1e90ff">
 </p>
 
 ## 2D HTML5 Multiplayer Game Engine.
-**Taro is a multi-player-first, cross-platform 2D HTML5 game engine.** 
-It can support up to 64 concurrent players hosted on a $5/month VM while running box2d physics.
-Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](https://www.patreon.com/moddio)
+Taro is a multiplayer, cross-platform 2D HTML5 game engine.
+It can support up to 64 concurrent players hosted on a $5 / month VM while running Box2D physics.
+
+Join us on [Discord](https://discord.gg/XRe8T7K), or support us on [Patreon](https://www.patreon.com/moddio).
 
 ## Demo ##
-[<img src="./assets/images/demo.png" width="390" alt="demo">](http://taro.town)
+[<img src="./src/client/assets/img/demo.png" width="390" alt="demo">](http://taro.town)
 
 ## What's included in the box
 - Box2D Physics
@@ -26,45 +33,43 @@ Join us on [Discord](https://discord.gg/XRe8T7K) or support us on [Patreon](http
 - Mobile controls
 - and more!
 
-## Node version
-Node versions above [12](https://nodejs.org/download/release/v12.20.0/) are not currently supported due to a downstream dependency (clusterws)
+## Prerequisites
+- Git
+- NodeJS version 14 or higher.
+- NPM version 7.5.4 or higher.
 
-## How to run a game server
-Taro engine will run games made using [modd.io](https://www.modd.io).
 
-To run the game server, execute the following command:
+## Running a Game Server
+The taro engine will run games made using [modd.io](https://www.modd.io).
+
+To run the gameserver, execute the following command:
 ```
-npm run server --game=<gameID>
+npm run dev --game=<gameID>
 ```
-*if the gameID argument is not provided, then the engine will use game.json stored in root directory instead.
-
+If the game ID is not provided, then the engine will use the local game.json file instead.
 Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
 
-<img src="./assets/images/gameid.png" width="600" alt="How to get game id">
+<img src="./src/client/assets/img/gameID.png" width="600" alt="How to get the Game ID">
 
 ## Quick start example - Run "Two Houses" locally
 
-Install [Node 12](https://nodejs.org/download/release/v12.20.0/) and then...
+Install [Node.js](https://nodejs.org/download/release/v14.15.4/) and then...
 
 ```
 git clone https://github.com/moddio/taro.git
 cd taro
 npm install
-npm run server --game=5a7fd59b1014dc000eeec3dd
+npm run dev --game=5a7fd59b1014dc000eeec3dd
 ```
 
-## Connecting to the game server
-Visit http://localhost:2000 to start testing game.
+## Viewing the locally hosted game
+Visit http://localhost:8080 to start testing your game.
 
-## How to customize game client UI
-Game client's user interface is rendered by [/src/index.ejs](https://github.com/moddio/taro/blob/master/src/index.ejs) file and the theme files in [/src/templates/](https://github.com/moddio/taro/tree/master/src/templates)
-
-## How to make games on modd.io
-Please visit https://www.modd.io/tutorials for more information
+## How to Make Games on Modd.io
+Please visit [our tutorials](https://www.modd.io/tutorials) for more information.
 
 ## We need contributors, and we are also hiring
-Performance optimization is a hard problem that takes aeons to solve. We are always looking for more developers to help us. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K) If you find yourself enjoying working with us, then we should seriously consider working together.
+We are always looking for more developers to help us. To be a contributor, please contact m0dE in our [Discord](https://discord.gg/XRe8T7K) If you find yourself enjoying working with us, then we should seriously consider working together.
 
-Taro is completely free and open source under MIT license.
-
-Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016
+Taro is completely free and open source under the MIT license.
+Taro Engine was originally forked from [Isogenic Game Engine](https://www.isogenicengine.com/) back in 2016.
