@@ -49,7 +49,7 @@ npm run dev --game=<gameID>
 If the game ID is not provided, then the engine will use the local game.json file instead.
 Your game's Game ID can be found in your modd.io's game's sandbox ([example](https://beta.modd.io/sandbox/game/two-houses/scripts)). Go to menu -> about.
 
-<img src="./src/client/assets/img/gameID.png" width="600" alt="How to get fthe Game ID">
+<img src="./src/client/assets/img/gameID.png" width="600" alt="How to get the Game ID">
 
 ## Quick start example - Run "Two Houses" locally
 
