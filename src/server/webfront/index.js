@@ -1,14 +1,14 @@
 require(`dotenv`).config();
 
 // Configuration.
-const config = require(`../../config/config.js`);
+const config = require(`../../../config/config.js`);
 const path = require(`path`);
 const fs = require(`fs`);
 
 // Utilities
-const log = require(`..//utils/log.js`);
-const logASCII = require(`../utils/logASCII.js`);
-const logHeader = require(`../utils/logHeader.js`);
+const log = require(`../../utils/log.js`);
+const logASCII = require(`../../utils/logASCII.js`);
+const logHeader = require(`../../utils/logHeader.js`);
 
 // HTTP / HTTPS transport protocols.
 const http = require(`http`);
@@ -39,8 +39,8 @@ app.set(`view engine`, `ejs`);
 app.use(`/`, express.static(config.staticDir));
 
 // Use routes.
-const apiRouter = require(`./routes/api.js`);
-const indexRouter = require(`./routes/index.js`);
+const apiRouter = require(`./routes/api.js.js`);
+const indexRouter = require(`./routes/index.js.js`);
 
 app.use(`/api`, apiRouter);
 app.use(`/`, indexRouter);

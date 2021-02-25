@@ -194,7 +194,7 @@ var IgeNode = IgeClass.extend({
 		var clientCode = '', coreCode = '', finalFileData,
 			clientCodeReturn, coreCodeReturn,
 			fs = this.fs,
-			igeCoreConfig = require('../engine/CoreConfig.js'),
+			igeCoreConfig = require('../engine/CoreConfig.js.js'),
 			arr = igeCoreConfig.include,
 			arrCount = arr.length,
 			arrIndex,
@@ -299,7 +299,7 @@ var IgeNode = IgeClass.extend({
 
 		// Load the CoreConfig.js file
 		var fs = this.fs,
-			igeCoreConfig = require('../engine/CoreConfig.js'),
+			igeCoreConfig = require('../engine/CoreConfig.js.js'),
 			arr = igeCoreConfig.include,
 			arrCount = arr.length,
 			arrIndex,

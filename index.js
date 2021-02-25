@@ -1,2 +1,2 @@
 // Start and bind the webfront.
-require(`./src/webfront/index.js`);
+require(`./src/server/webfront/index.js`);
