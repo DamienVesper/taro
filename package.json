@@ -37,5 +37,10 @@
     "path": "^0.12.7",
     "socket.io": "^3.1.1",
     "xss-filters": "^1.2.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.1",
+    "@babel/eslint-parser": "^7.13.4",
+    "eslint": "^7.20.0"
   }
 }
