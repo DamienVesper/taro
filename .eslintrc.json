@@ -1,0 +1,50 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
+    },
+    "globals": {
+        "$": true,
+        "jQuery": true
+    },
+    "extends": [
+        "standard",
+        "eslint:recommended"
+    ],
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "requireConfigFile": false
+    },
+    "rules": {
+        "func-call-spacing": 1,
+        "no-unexpected-multiline": 1,
+        "eqeqeq": 1,
+        "no-eval": 2,
+        "array-bracket-newline": 1,
+        "brace-style": 0,
+        "comma-spacing": 1,
+        "no-var": 1,
+        "indent": ["error", 4, {
+            "SwitchCase": 1
+        }],
+        "semi": [2, "always"],
+        "quotes": [2, "backtick", "avoid-escape"],
+        "no-undef": 1,
+        "no-unused-vars": 1,
+        "prefer-const": 1,
+        "no-mixed-operators": 0,
+        "no-prototype-builtins": 1,
+        "curly": 0,
+        "prefer-arrow-callback": 1,
+        "prefer-template": 1,
+        "no-unreachable-loop": 1,
+        "no-unused-expressions": 1,
+        "no-useless-escape": 1,
+        "camelcase": 1,
+        "node/no-callback-literal": 0,
+        "no-return-assign": 0
+    }
+}
