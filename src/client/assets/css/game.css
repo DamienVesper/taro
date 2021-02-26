@@ -61,7 +61,7 @@ html, body {
 }
 
 .game-ui {
-    display: block;
+    display: none;
 
     width: 100%;
     height: 100%;
