@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css?family=Cabin');
 
-html {
-    user-select: none;
-}
+html, body {
+    width: 100%;
+    height: 100%;
 
-body {
+    margin: 0px;
+    padding: 0px;
+
+    user-select: none;
     font-family: 'Cabin', 'arial', serif !important;
 }
 
@@ -58,9 +61,13 @@ body {
 }
 
 .game-ui {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
     z-index: 1000;
     color: white;
-    margin: 10px;
     position: absolute;
 }
 
@@ -141,13 +148,6 @@ body {
 
 .swal2-container.swal2-shown {
     z-index: 100000;
-}
-
-.game-ui {
-    z-index: 1000;
-    color: white;
-    margin: 10px;
-    display: none;
 }
 
 .score-div {

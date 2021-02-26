@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Minified client file.
+client.min.js
