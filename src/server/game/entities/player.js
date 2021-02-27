@@ -15,6 +15,15 @@ class Player extends Entity {
 
         // Security value for if the player is muted in chat.
         this.isMuted = false;
+
+        // Security values for permissions.
+        this.permissions = {
+            gameDev: false,
+            gameMod: false,
+
+            siteAdmin: false,
+            siteMod: false
+        };
     }
 }
 
