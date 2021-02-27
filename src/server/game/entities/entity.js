@@ -10,17 +10,21 @@ class Entity {
             x,
             y
         };
+
         this.velocity = {
             x: 0,
             y: 0
         };
+
+        // They also have a rotation.
+        this.rotation = 0;
 
         // Add the entity to the entity array.
         entities.push(this);
     }
 
     tick (tickSpeed) {
-        // Move the entity by its velocity every tick and adjust for timing error.
+        // Move the entity by its velocity every tick.
         this.position.x += this.velocity.x * tickSpeed;
         this.position.y += this.velocity.y * tickSpeed;
     }
