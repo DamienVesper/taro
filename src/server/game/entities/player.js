@@ -14,10 +14,10 @@ class Player extends Entity {
         this.name = name ? filter.clean(xssFilters.inHTMLData(name)) : `user${Math.floor(Math.random() * 900) + 100}`;
         this.isLoggedIn = name !== undefined;
 
-        // Security value for if the player is muted in chat.
+        // Security values.
         this.isMuted = false;
+        this.lastMoved = new Date();
 
-        // Security values for permissions.
         this.permissions = {
             gameDev: false,
             gameMod: false,
