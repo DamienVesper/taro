@@ -10,8 +10,9 @@ class Player extends Entity {
         // Define the entity as a player.
         this.netType = 0;
 
-        // Set the name of the player.
-        this.name = filter.clean(xssFilters.inHTMLData(name));
+        // Set the name of the player, and determine whether it is a logged in account.
+        this.name = name ? filter.clean(xssFilters.inHTMLData(name)) : `user${Math.floor(Math.random() * 900) + 100}`;
+        this.isLoggedIn = name !== undefined;
 
         // Security value for if the player is muted in chat.
         this.isMuted = false;
