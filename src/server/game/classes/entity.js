@@ -20,7 +20,7 @@ class Entity {
     }
 
     tick (tickSpeed) {
-        // Move the entity by it's velocity every tick and adjust for timing error.
+        // Move the entity by its velocity every tick and adjust for timing error.
         this.position.x += this.velocity.x * tickSpeed;
         this.position.y += this.velocity.y * tickSpeed;
     }
