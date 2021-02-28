@@ -3,7 +3,7 @@ let ClientNetworkEvents = {
         let clientId = data.clientId;
         // console.log("diskonnekt", clientId, ige.network.id())
         // if it's me that got disconnected!
-        if (clientId == ige.network.id()) {
+        if (clientId === ige.network.id()) {
             $(`#disconnect-reason`).html(data.reason);
             ige.menuUi.onDisconnectFromServer(`clientNetworkEvents #10`, data.reason);
         }
@@ -13,16 +13,16 @@ let ClientNetworkEvents = {
         // console.log("_onUpdateAllEntities", data)
         for (entityId in data) {
             let entity = ige.$(entityId);
-            if (ige.client.entityUpdateQueue[entityId] == undefined) {
+            if (ige.client.entityUpdateQueue[entityId] === undefined) {
                 ige.client.entityUpdateQueue[entityId] = [];
             }
 
             if (ige.client.isActiveTab) {
                 let stats = data[entityId];
                 for (key in stats) {
-                    if (stats[key] != undefined) {
+                    if (stats[key] !== undefined) {
                         // use for mounting offscreen entitys when it starts firing
-                        if (entity && entity._category === `item` && stats[key].isBeingUsed != undefined) {
+                        if (entity && entity._category === `item` && stats[key].isBeingUsed !== undefined) {
                             entity.isBeingUsed = stats[key].isBeingUsed;
                         }
                         // console.log(entityId, stats[key])
@@ -51,7 +51,7 @@ let ClientNetworkEvents = {
 
     _onMakePlayerSelectUnit: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
             // in case the unit doesn't exist when player tries to select it, we're pushing the command into entityUpdateQueue
@@ -61,7 +61,7 @@ let ClientNetworkEvents = {
 
     _onMakePlayerCameraTrackUnit: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
 
@@ -78,7 +78,7 @@ let ClientNetworkEvents = {
 
     _onHideUnitFromPlayer: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
 
@@ -88,7 +88,7 @@ let ClientNetworkEvents = {
     },
     _onShowUnitFromPlayer: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
 
@@ -98,7 +98,7 @@ let ClientNetworkEvents = {
     },
     _onHideUnitNameLabelFromPlayer: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
 
@@ -108,7 +108,7 @@ let ClientNetworkEvents = {
     },
     _onShowUnitNameLabelFromPlayer: function (data) {
         if (data.unitId) {
-            if (ige.client.entityUpdateQueue[data.unitId] == undefined) {
+            if (ige.client.entityUpdateQueue[data.unitId] === undefined) {
                 ige.client.entityUpdateQueue[data.unitId] = [];
             }
 
@@ -191,9 +191,9 @@ let ClientNetworkEvents = {
     _onUpdateUiText: function (data) {
         // console.log("updating UI text", data)
 
-        if (data.action == `show`) {
+        if (data.action === `show`) {
             $(`.ui-text-${data.target}`).show();
-        } else if (data.action == `hide`) {
+        } else if (data.action === `hide`) {
             $(`.ui-text-${data.target}`).hide();
         } else {
             $(`.ui-text-${data.target}`).html(data.value);
@@ -203,7 +203,7 @@ let ClientNetworkEvents = {
     _onAlertHighscore: function (data) {
         // $('.highscore-text').html('You set a new personal highscore!').show();
         // setTimeout(function () {
-        // 	$('.highscore-text').hide()
+        // $('.highscore-text').hide()
         // }, 5000);
     },
 
@@ -211,17 +211,17 @@ let ClientNetworkEvents = {
     _onItem: function (data) {
         let item = ige.$(data.id);
         if (item) {
-            if (item._category == `item`) {
+            if (item._category === `item`) {
                 let ownerUnit = item.getOwnerUnit();
-                if (data.type == `use` && ownerUnit && ownerUnit != ige.client.selectedUnit) {
+                if (data.type === `use` && ownerUnit && ownerUnit !== ige.client.selectedUnit) {
                     item.use();
-                } else if (data.type == `stop`) {
+                } else if (data.type === `stop`) {
                     item.stopUsing();
-                } else if (data.type == `reload`) {
+                } else if (data.type === `reload`) {
                     item.reload();
                 }
             } else {
-                if (data.type == `hit`) {
+                if (data.type === `hit`) {
                     item.effect.start(`bulletHit`);
                 }
             }
@@ -362,54 +362,6 @@ let ClientNetworkEvents = {
         $(`.btn-buy-skin[name='${skinHandle}']`).html(`Purchased`);
     },
 
-    // _onTradeRequest: function (data) {
-    // 	$("#trader-name").html(data.name)
-
-    // 	if (data.initatedByMe) {
-    // 		$("#trade-request-message").html("requesting " + data.name + " to trade")
-    // 		$("#accept-trade-request-button").hide()
-    // 	}
-    // 	else {
-    // 		$("#trade-request-message").html(data.name + " wants to trade")
-    // 		$("#accept-trade-request-button").show()
-    // 	}
-
-    // 	$("#trade-request-div").show();
-    // },
-
-    // _onTrade: function (data) {
-    // 	$("#trade-message").html("");
-
-    // 	if (data.cmd == 'start') {
-    // 		$("#trade-request-div").hide();
-    // 		$("#trade-div").show();
-    // 	}
-    // 	else if (data.cmd == 'offer') {
-    // 		if (parseInt(data.originSlotNumber) > 12) {
-    // 			ige.client.tradeOffers[parseInt(data.originSlotNumber) - 12] = data.originSlotItem
-    // 		}
-
-    // 		if (parseInt(data.destinationSlotNumber) > 12) {
-    // 			ige.client.tradeOffers[parseInt(data.destinationSlotNumber) - 12] = data.destinationSlotItem
-    // 		}
-
-    // 		$("#trade-message").html($("#trader-name").html() + " changed item")
-
-    // 		ige.client.updateTradeOffer()
-
-    // 	}
-    // 	else if (data.cmd == 'noRoom') {
-    // 		$("#trade-message").html("No room in inventory")
-    // 	}
-    // 	else if (data.cmd == 'accept') {
-    // 		$("#trade-message").html($("#trader-name").html() + " accepted")
-    // 	}
-    // 	else if (data.cmd == 'close') // cancels both trade & trade-request
-    // 	{
-    // 		ige.game.closeTrade()
-    // 	}
-    // },
-
     _onDevLogs: function (data) {
         ige.variable.updateDevConsole(data);
     },
@@ -425,8 +377,8 @@ let ClientNetworkEvents = {
             }
 
             case `start`: {
-                var playerA = ige.$(msg.between.playerA);
-                var playerB = ige.$(msg.between.playerB);
+                let playerA = ige.$(msg.between.playerA);
+                let playerB = ige.$(msg.between.playerB);
                 if (playerA && playerA._category === `player` && playerB && playerB._category === `player`) {
                     ige.tradeUi.startTrading(playerA, playerB);
                 }
@@ -444,8 +396,8 @@ let ClientNetworkEvents = {
             }
 
             case `success`: {
-                var playerA = ige.$(msg.between.playerA);
-                var playerB = ige.$(msg.between.playerB);
+                let playerA = ige.$(msg.between.playerA);
+                let playerB = ige.$(msg.between.playerB);
                 delete playerA.tradingWith;
                 delete playerB.tradingWith;
                 delete playerA.isTrading;
@@ -455,8 +407,8 @@ let ClientNetworkEvents = {
             }
 
             case `cancel`: {
-                var playerA = ige.$(msg.between.playerA);
-                var playerB = ige.$(msg.between.playerB);
+                let playerA = ige.$(msg.between.playerA);
+                let playerB = ige.$(msg.between.playerB);
                 delete playerA.tradingWith;
                 delete playerB.tradingWith;
                 delete playerA.isTrading;
@@ -478,9 +430,13 @@ let ClientNetworkEvents = {
     },
 
     _onSound: function (data) {
+        let music = ige.game.data.music[data.id];
+        let sound = ige.game.data.sound[data.sound];
+        let unit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
+        let soundData = ige.game.data.sound[data.id];
+
         switch (data.cmd) {
             case `playMusic`:
-                var music = ige.game.data.music[data.id];
                 if (music) {
                     ige.sound.playMusic(music, undefined, undefined, data.id);
                 }
@@ -490,22 +446,17 @@ let ClientNetworkEvents = {
                 ige.sound.stopMusic();
                 break;
             case `playMusicForPlayer`:
-                var music = ige.game.data.music[data.music];
                 if (music) {
                     ige.sound.playMusic(music, undefined, undefined, data.music);
                 }
                 break;
             case `playMusicForPlayerRepeatedly`:
-                var music = ige.game.data.music[data.music];
-
                 if (music) {
                     ige.sound.playMusic(music, undefined, true, data.music);
                 }
                 break;
             case `playSoundForPlayer`:
-                var sound = ige.game.data.sound[data.sound];
                 if (sound) {
-                    let unit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
                     ige.sound.playSound(sound, (unit && unit._translate) || null, data.sound);
                 }
                 break;
@@ -513,33 +464,32 @@ let ClientNetworkEvents = {
                 ige.sound.stopSound(sound, data.sound);
                 break;
             default:
-                var soundData = ige.game.data.sound[data.id];
                 ige.sound.playSound(soundData, data.position, data.id);
         }
     },
 
     _onParticle: function (data) {
         if (data.eid && data.pid) {
-            var entity = ige.$(data.eid);
+            let entity = ige.$(data.eid);
 
             // the particle emitter must be within myPlayer's camera viewing range
             if (entity && entity.particleEmitters[data.pid] && entity._translate.x > ige.client.vp1.camera._translate.x - 1000 && entity._translate.x < ige.client.vp1.camera._translate.x + 1000 && entity._translate.y > ige.client.vp1.camera._translate.y - 1000 && entity._translate.y < ige.client.vp1.camera._translate.y + 1000) {
                 let particleEmitter = entity.effect.particleEmitters[data.pid];
 
-                if (data.action == `start`) {
+                if (data.action === `start`) {
                     particleEmitter.start();
-                } else if (data.action == `stop`) {
+                } else if (data.action === `stop`) {
                     particleEmitter.stop();
-                } else if (data.action == `emitOnce`) {
+                } else if (data.action === `emitOnce`) {
                     particleEmitter.emitOnce();
                 }
             }
         } else if (data.pid && data.position) {
             // my unit
-            var entity = ige.client.vp1.camera._trackTranslateTarget;
+            let entity = ige.client.vp1.camera._trackTranslateTarget;
             let particle = ige.game.data.particleTypes[data.pid];
             if (entity && particle && entity._translate.x > ige.client.vp1.camera._translate.x - 1000 && entity._translate.x < ige.client.vp1.camera._translate.x + 1000 && entity._translate.y > ige.client.vp1.camera._translate.y - 1000 && entity._translate.y < ige.client.vp1.camera._translate.y + 1000) {
-                if (particle.dimensions == undefined) {
+                if (particle.dimensions === undefined) {
                     particle.dimensions = { width: 5, height: 5 };
                 }
 
@@ -571,11 +521,11 @@ let ClientNetworkEvents = {
 
     _onCamera: function (data) {
         // camera zoom change
-        if (data.cmd == `zoom`) {
+        if (data.cmd === `zoom`) {
             ige.client.setZoom(data.zoom);
         }
         // track unit
-        if (data.cmd == `track`) {
+        if (data.cmd === `track`) {
             let unit = ige.$(data.unitId);
             if (unit) {
                 ige.client.vp1.camera.trackTranslate(unit, ige.client._trackTranslateSmoothing);
@@ -588,25 +538,24 @@ let ClientNetworkEvents = {
     },
 
     _onGameSuggestion: function (data) {
-        if (data && data.type == `show`) {
+        if (data && data.type === `show`) {
             $(`#more-games`).removeClass(`slidedown-menu-animation`).addClass(`slideup-menu-animation`);
-        } else if (data && data.type == `hide`) {
+        } else if (data && data.type === `hide`) {
             $(`#more-games`).removeClass(`slideup-menu-animation`).addClass(`slidedown-menu-animation`);
         }
     },
 
     _onMinimapEvent: function (data) {
         if (data) {
+            let unit = ige.$(data.unitId);
             switch (data.type) {
                 case `showUnit`:
-                    var unit = ige.$(data.unitId);
                     if (unit) {
                         unit.showMinimapUnit(data.color);
                     }
                     break;
 
                 case `hideUnit`:
-                    var unit = ige.$(data.unitId);
                     if (unit) {
                         unit.hideMinimapUnit();
                     }
