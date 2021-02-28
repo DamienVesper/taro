@@ -1,13 +1,13 @@
-var IgePixiTexture = IgeClass.extend({
-    classId: 'IgePixiTexture',
-    componentId: 'pixitexture',
+let IgePixiTexture = IgeClass.extend({
+    classId: `IgePixiTexture`,
+    componentId: `pixitexture`,
     init: function (entity) {
-        if (typeof arguments[0] == 'string') {
+        if (typeof arguments[0] === `string`) {
             this._stats = {
                 url: arguments[0],
                 columns: arguments[1],
-                rows: arguments[2],
-            }
+                rows: arguments[2]
+            };
             this._entity = arguments[3];
         }
         else {
@@ -15,7 +15,7 @@ var IgePixiTexture = IgeClass.extend({
         }
     },
     get: function (source, data) {
-        var texture = null;
+        let texture = null;
         if (ige.pixi.loader.resources[source] && ige.pixi.loader.resources[source].texture) {
             texture = ige.pixi.loader.resources[source].texture.clone();
         }
@@ -23,16 +23,16 @@ var IgePixiTexture = IgeClass.extend({
             texture = new PIXI.Texture(PIXI.utils.BaseTextureCache[source]);
         }
         else {
-            var version = 1;
+            let version = 1;
             if (data && data.entity.lastLoadedImage != source) {
-                var resource = new PIXI.Loader();
-                var options = {};
+                let resource = new PIXI.Loader();
+                let options = {};
 
                 // if image is not from discord
                 options = { crossOrigin: true };
 
-                resource.add(source, source + "?version=" + version, options)
-                    .load(function () {
+                resource.add(source, `${source}?version=${version}`, options)
+                    .load(() => {
                         data.entity.pixianimation._anims = {};
                         data.entity[data.cb](data.animationId);
                     });
@@ -40,21 +40,21 @@ var IgePixiTexture = IgeClass.extend({
                 data.entity.lastLoadedImage = source;
             }
 
-            texture = new PIXI.Texture(PIXI.utils.BaseTextureCache["emptyTexture"]);
+            texture = new PIXI.Texture(PIXI.utils.BaseTextureCache.emptyTexture);
         }
         return texture;
     },
     loadTextures: function (url, column, row) {
         this._stats = {};
-        if (typeof url === 'string') {
-            var texture,
-                resource = ige.pixi.loader.resources[url];
+        if (typeof url === `string`) {
+            let texture;
+            let resource = ige.pixi.loader.resources[url];
             if (resource) {
                 texture = new PIXI.Sprite(resource.texture);
                 this._stats.resourceTexture = resource.texture;
             }
             else {
-                texture = new PIXI.Sprite.from(url)
+                texture = new PIXI.Sprite.from(url);
             }
             this._stats.columns = parseInt(column);
             this._stats.rows = parseInt(row);
@@ -63,7 +63,7 @@ var IgePixiTexture = IgeClass.extend({
             texture.height = this._entity._stats.currentBody && this._entity._stats.currentBody.height || this._entity._stats.height;
             // texture.pivot.set(texture.width / 2, texture.height / 2);
             texture.anchor.set(0.5);
-            texture.zIndex = this._entity._stats.currentBody && this._entity._stats.currentBody['z-index'].layer || 3;
+            texture.zIndex = this._entity._stats.currentBody && this._entity._stats.currentBody[`z-index`].layer || 3;
             // texture.anchor.set(0.5);
             texture._category = this._category;
             this._entity._pixiTexture = texture;
@@ -75,27 +75,27 @@ var IgePixiTexture = IgeClass.extend({
     spriteFromCellSheet: function (gid, log) {
         // var spacing = map.tilesets[0].spacing || 0;
         // gid = gid - 1;
-        var spacing = 0;
-        var resource = this.get(this._stats.url, {
+        let spacing = 0;
+        let resource = this.get(this._stats.url, {
             entity: this._entity,
-            cb: 'createPixiTexture',
+            cb: `createPixiTexture`,
             animationId: gid
         });
 
-        var tilesetColumn = (gid) % this._stats.columns;
-        var tilesetRow = Math.floor((gid) / this._stats.columns);
-        var spriteWidth = resource.width / this._stats.columns;
-        var spriteHeight = resource.height / this._stats.rows;
-        var tilesetX = tilesetColumn * spriteWidth;
-        var tilesetY = tilesetRow * spriteHeight;
+        let tilesetColumn = (gid) % this._stats.columns;
+        let tilesetRow = Math.floor((gid) / this._stats.columns);
+        let spriteWidth = resource.width / this._stats.columns;
+        let spriteHeight = resource.height / this._stats.rows;
+        let tilesetX = tilesetColumn * spriteWidth;
+        let tilesetY = tilesetRow * spriteHeight;
         resource = this.get(this._stats.url);
         try {
             resource.frame = new PIXI.Rectangle(tilesetX, tilesetY, spriteWidth, spriteHeight);
         }
         catch (e) {
-            console.log('Error in loading texture from "' + this._stats.url + "'. Please check", e);
+            console.log(`Error in loading texture from "${this._stats.url}'. Please check`, e);
         }
-        var sprite = new PIXI.Sprite(resource);
+        let sprite = new PIXI.Sprite(resource);
 
         sprite.width = this._entity.width();
         sprite.height = this._entity.height();
@@ -108,9 +108,8 @@ var IgePixiTexture = IgeClass.extend({
         this.zIndex = order;
     },
     generateFramesCells: function (cols, rows, texture) {
-
         return cells;
     }
-})
+});
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiTexture; }
+if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = IgePixiTexture; }

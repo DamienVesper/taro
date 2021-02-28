@@ -1,6 +1,6 @@
-var IgePixiAnimation = IgeClass.extend({
-    classId: 'IgePixiAnimation',
-    componentId: 'pixianimation',
+let IgePixiAnimation = IgeClass.extend({
+    classId: `IgePixiAnimation`,
+    componentId: `pixianimation`,
     init: function (entity) {
         this._anims = {};
         this._entity = entity;
@@ -10,51 +10,51 @@ var IgePixiAnimation = IgeClass.extend({
         return !!this._anims[cellSheetAnimId];
     },
     define: function (source, col, row, cellSheetAnimId, animationId) {
-        var self = this;
-        var sourceTexture = null;
+        let self = this;
+        let sourceTexture = null;
         if (!this._anims[cellSheetAnimId]) {
             sourceTexture = ige.pixitexture.get(source, {
                 entity: this._entity,
-                cb: 'applyAnimationById',
+                cb: `applyAnimationById`,
                 animationId: animationId
             });
             if (!sourceTexture) return;
 
-            var spriteWidth = sourceTexture.width / col;
-            var spriteHeight = sourceTexture.height / row;
-            var texturesWithSprites = [];
-            var animationTextures = ige.pixi.loader.resources[source] && ige.pixi.loader.resources[source].animation && ige.pixi.loader.resources[source].animation._anims;
+            let spriteWidth = sourceTexture.width / col;
+            let spriteHeight = sourceTexture.height / row;
+            let texturesWithSprites = [];
+            let animationTextures = ige.pixi.loader.resources[source] && ige.pixi.loader.resources[source].animation && ige.pixi.loader.resources[source].animation._anims;
             if (animationTextures) {
-                animationTextures.forEach(function (texture) {
+                animationTextures.forEach((texture) => {
                     texturesWithSprites.push(self.setSpriteProperty(texture.clone()));
                 });
             }
             else {
-                for (var i = 0; i < row; i++) {
-                    for (var j = 0; j < col; j++) {
-                        var tileX = j * spriteWidth;
-                        var tileY = i * spriteHeight;
+                for (let i = 0; i < row; i++) {
+                    for (let j = 0; j < col; j++) {
+                        let tileX = j * spriteWidth;
+                        let tileY = i * spriteHeight;
 
                         // need to get every time clone texture;
-                        var resource = ige.pixitexture.get(source);
+                        let resource = ige.pixitexture.get(source);
                         try {
                             resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
                         }
                         catch (e) {
                             console.log(e);
-                            alert('animation for ' + source + ' cannot be loaded');
+                            alert(`animation for ${source} cannot be loaded`);
                         }
                         texturesWithSprites.push(self.setSpriteProperty(resource));
                     }
                 }
-            };
+            }
             this._anims[cellSheetAnimId] = texturesWithSprites;
         }
         return this._anims[cellSheetAnimId];
     },
     setSpriteProperty: function (texture) {
-        var self = this;
-        var sprite = new PIXI.Sprite(texture);
+        let self = this;
+        let sprite = new PIXI.Sprite(texture);
         sprite.zIndex = self._entity._layer || 3;
         sprite.depth = self._entity._depth || 3.33;
         sprite.anchor.set(0.5);
@@ -63,40 +63,40 @@ var IgePixiAnimation = IgeClass.extend({
         return sprite;
     },
     getAnimationSprites: function (source, col, row) {
-        var sourceTexture = ige.pixitexture.get(source);
+        let sourceTexture = ige.pixitexture.get(source);
         if (!sourceTexture) return;
 
-        var spriteWidth = sourceTexture.width / col;
-        var spriteHeight = sourceTexture.height / row;
-        var texturesWithSprites = [];
-        for (var i = 0; i < row; i++) {
-            for (var j = 0; j < col; j++) {
-                var tileX = j * spriteWidth;
-                var tileY = i * spriteHeight;
+        let spriteWidth = sourceTexture.width / col;
+        let spriteHeight = sourceTexture.height / row;
+        let texturesWithSprites = [];
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < col; j++) {
+                let tileX = j * spriteWidth;
+                let tileY = i * spriteHeight;
 
                 // need to get every time clone texture;
-                var resource = ige.pixitexture.get(source);
+                let resource = ige.pixitexture.get(source);
                 try {
                     resource.frame = new PIXI.Rectangle(tileX, tileY, spriteWidth, spriteHeight);
                 }
                 catch (e) {
                     console.log(e);
-                    alert('animation for ' + source + ' cannot be loaded');
+                    alert(`animation for ${source} cannot be loaded`);
                 }
                 texturesWithSprites.push(resource);
             }
         }
         this._anims = texturesWithSprites;
-        return texturesWithSprites
+        return texturesWithSprites;
     },
     select: function (frames, fps = 15, loopCount, cellSheetAnimId, animName) {
-        var self = this;
-        var entity = ige.pixi.trackEntityById[self._entity.entityId];
+        let self = this;
+        let entity = ige.pixi.trackEntityById[self._entity.entityId];
         if (!entity) return;
 
-        var startFrame = frames[0] - 1;
-        var lastFrame = frames[frames.length - 1] - 1;
-        var totalNumberOfFrames = frames.length;
+        let startFrame = frames[0] - 1;
+        let lastFrame = frames[frames.length - 1] - 1;
+        let totalNumberOfFrames = frames.length;
 
         self.i = 0;
         self.fpsSecond = 1000 / fps;
@@ -108,7 +108,6 @@ var IgePixiAnimation = IgeClass.extend({
         self._entity.currentAnimId = cellSheetAnimId;
 
         this.resetAnimation();
-
 
         if (!this.animating) {
             this.animating = true;
@@ -122,7 +121,7 @@ var IgePixiAnimation = IgeClass.extend({
             this._anims[this._entity.currentAnimId] &&
             this._anims[this._entity.currentAnimId][frameIndex]
         ) {
-            this._entity._pixiTexture.texture = this._anims[this._entity.currentAnimId][frameIndex].texture
+            this._entity._pixiTexture.texture = this._anims[this._entity.currentAnimId][frameIndex].texture;
         }
     },
     resetAnimation: function () {
@@ -130,7 +129,7 @@ var IgePixiAnimation = IgeClass.extend({
         this.animating = false;
     },
     advanceFrame: function (frameNumber) {
-        var i = this.i;
+        let i = this.i;
 
         frameNumber = frameNumber - 1;
         if (i < this.totalNumberOfFrames - 1) {
@@ -146,7 +145,7 @@ var IgePixiAnimation = IgeClass.extend({
             // stopAtFrame(startFrame);
             // self._entity.pixianimation.select(frames, fps, loopCount = true, self._entity.currentAnimId);
         }
-        else if (this.loopCount === undefined || this.loopCount === -1 || this.loopCount === "") {
+        else if (this.loopCount === undefined || this.loopCount === -1 || this.loopCount === ``) {
             i = 0;
             this.stopAtFrame(this.lastFrame);
         }
@@ -158,10 +157,10 @@ var IgePixiAnimation = IgeClass.extend({
     },
     animationTick: function () {
         if (this.animating) {
-            var i = this.i;
+            let i = this.i;
             this.advanceFrame(this.frames[i], i);
         }
     }
-})
+});
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiAnimation; }
+if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = IgePixiAnimation; }

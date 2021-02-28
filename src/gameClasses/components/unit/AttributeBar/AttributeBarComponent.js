@@ -1,11 +1,11 @@
-var AttributeBarComponent = IgeEntity.extend({
-    classId: 'AttributeBarComponent',
-    componentId: 'attributeBar',
+let AttributeBarComponent = IgeEntity.extend({
+    classId: `AttributeBarComponent`,
+    componentId: `attributeBar`,
 
     init: function (containerId, attribute, index) {
-        var self = this
+        let self = this;
 
-        self.id()
+        self.id();
 
         self._drawAttributeBar(containerId, attribute, index);
         self._stats = {
@@ -18,18 +18,18 @@ var AttributeBarComponent = IgeEntity.extend({
      * creates an instance of AttributeBar
      */
     _drawAttributeBar: function (containerId, attributeData, index) {
-        var self = this;
-        var verticalOffset = AttributeBar.prototype.barHeight() * index
+        let self = this;
+        let verticalOffset = AttributeBar.prototype.barHeight() * index;
         self._uiEntity = new AttributeBar(containerId, attributeData, verticalOffset);
     },
 
     /**
      * @param {object} attributeData
-     * 
+     *
      * updates attribute bar based on provided {attributeData} data
      */
     updateBar: function (attributeData) {
-        var self = this;
+        let self = this;
 
         if (self._uiEntity) {
             self._uiEntity.updateBar(attributeData);
@@ -40,7 +40,7 @@ var AttributeBarComponent = IgeEntity.extend({
      * destroys attribute bar
      */
     destroyBar: function () {
-        var self = this;
+        let self = this;
 
         self._uiEntity.attributeBarContainer.destroy();
         self._uiEntity.attributeBar.destroy();
@@ -55,6 +55,6 @@ var AttributeBarComponent = IgeEntity.extend({
     }
 });
 
-if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
+if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) {
     module.exports = AttributeBarComponent;
 }

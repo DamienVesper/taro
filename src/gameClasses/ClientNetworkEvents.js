@@ -1,28 +1,28 @@
-var ClientNetworkEvents = {
+let ClientNetworkEvents = {
     _onClientDisconnect: function (data) {
-        var clientId = data.clientId;
+        let clientId = data.clientId;
         // console.log("diskonnekt", clientId, ige.network.id())
         // if it's me that got disconnected!
         if (clientId == ige.network.id()) {
-            $('#disconnect-reason').html(data.reason);
-            ige.menuUi.onDisconnectFromServer('clientNetworkEvents #10', data.reason);
+            $(`#disconnect-reason`).html(data.reason);
+            ige.menuUi.onDisconnectFromServer(`clientNetworkEvents #10`, data.reason);
         }
     },
 
     _onUpdateAllEntities: function (data) {
         // console.log("_onUpdateAllEntities", data)
         for (entityId in data) {
-            var entity = ige.$(entityId);
+            let entity = ige.$(entityId);
             if (ige.client.entityUpdateQueue[entityId] == undefined) {
                 ige.client.entityUpdateQueue[entityId] = [];
             }
 
             if (ige.client.isActiveTab) {
-                var stats = data[entityId];
+                let stats = data[entityId];
                 for (key in stats) {
                     if (stats[key] != undefined) {
                         // use for mounting offscreen entitys when it starts firing
-                        if (entity && entity._category === 'item' && stats[key].isBeingUsed != undefined) {
+                        if (entity && entity._category === `item` && stats[key].isBeingUsed != undefined) {
                             entity.isBeingUsed = stats[key].isBeingUsed;
                         }
                         // console.log(entityId, stats[key])
@@ -32,7 +32,7 @@ var ClientNetworkEvents = {
             } else {
                 // if user's current browser tab isn't this game.
 
-                //merging data
+                // merging data
                 if (ige.client.inactiveTabEntityStream[entityId] === undefined) {
                     ige.client.inactiveTabEntityStream[entityId] = [];
                 }
@@ -42,7 +42,7 @@ var ClientNetworkEvents = {
     },
 
     _onTeleport: function (data) {
-        var entity = ige.$(data.entityId);
+        let entity = ige.$(data.entityId);
         if (entity && data.position) {
             // console.log("teleporting",data.entityId , " to", data.position)
             entity.teleportTo(data.position[0], data.position[1]);
@@ -118,13 +118,13 @@ var ClientNetworkEvents = {
     },
     _onOpenShop: function (data) {
         if (data.type) {
-            var shopName = ige.game.data.shops[data.type] ? ige.game.data.shops[data.type].name : 'Item shop';
-            $('#modd-item-shop-header').text(shopName);
+            let shopName = ige.game.data.shops[data.type] ? ige.game.data.shops[data.type].name : `Item shop`;
+            $(`#modd-item-shop-header`).text(shopName);
             ige.shop.openItemShop(data.type);
-            $('#modd-item-shop-modal').modal('show');
-            var player = ige.client.myPlayer;
-            if (typeof countAdImpression === 'function' && player && !player._stats.isAdBlockEnabled) {
-                countAdImpression(gameId, 'shop');
+            $(`#modd-item-shop-modal`).modal(`show`);
+            let player = ige.client.myPlayer;
+            if (typeof countAdImpression === `function` && player && !player._stats.isAdBlockEnabled) {
+                countAdImpression(gameId, `shop`);
             }
         }
     },
@@ -135,12 +135,12 @@ var ClientNetworkEvents = {
             parent: ige.pixi.world,
             translate: {
                 x: data.position.x,
-                y: data.position.y,
-            },
+                y: data.position.y
+            }
         })
             .layer(3)
             .depth(3)
-            .colorOverlay(data.color || 'white')
+            .colorOverlay(data.color || `white`)
             .transformPixiEntity(data.position.x, data.position.y)
             .mount(ige.pixi.world)
             .fadeUp();
@@ -157,33 +157,33 @@ var ClientNetworkEvents = {
     },
 
     _onUpdateEntityAttribute: function (data) {
-        var entityId = data.e;
-        var attrId = data.a;
-        var value = data.x;
-        var property = data.p;
+        let entityId = data.e;
+        let attrId = data.a;
+        let value = data.x;
+        let property = data.p;
 
-        var entity = ige.$(entityId);
+        let entity = ige.$(entityId);
         if (entity && entity._stats && entity._stats.attributes && entity._stats.attributes[attrId]) {
             entity._stats.attributes[attrId][property] = value;
         }
     },
 
     _onUpdateUiTextForTime: function (data) {
-        $('.ui-text-' + data.target).show();
-        $('.ui-text-' + data.target).html(data.value);
+        $(`.ui-text-${data.target}`).show();
+        $(`.ui-text-${data.target}`).html(data.value);
 
         if (data.time && data.time > 0) {
             if (this.textTimer) {
                 clearTimeout(this.textTimer);
             }
 
-            var that = this;
+            let that = this;
             this.textTimerData = {
-                target: data.target,
+                target: data.target
             };
 
-            this.textTimer = setTimeout(function () {
-                $('.ui-text-' + that.textTimerData.target).hide();
+            this.textTimer = setTimeout(() => {
+                $(`.ui-text-${that.textTimerData.target}`).hide();
             }, data.time);
         }
     },
@@ -191,12 +191,12 @@ var ClientNetworkEvents = {
     _onUpdateUiText: function (data) {
         // console.log("updating UI text", data)
 
-        if (data.action == 'show') {
-            $('.ui-text-' + data.target).show();
-        } else if (data.action == 'hide') {
-            $('.ui-text-' + data.target).hide();
+        if (data.action == `show`) {
+            $(`.ui-text-${data.target}`).show();
+        } else if (data.action == `hide`) {
+            $(`.ui-text-${data.target}`).hide();
         } else {
-            $('.ui-text-' + data.target).html(data.value);
+            $(`.ui-text-${data.target}`).html(data.value);
         }
     },
 
@@ -209,20 +209,20 @@ var ClientNetworkEvents = {
 
     // _onStartParticle: function(data)
     _onItem: function (data) {
-        var item = ige.$(data.id);
+        let item = ige.$(data.id);
         if (item) {
-            if (item._category == 'item') {
-                var ownerUnit = item.getOwnerUnit();
-                if (data.type == 'use' && ownerUnit && ownerUnit != ige.client.selectedUnit) {
+            if (item._category == `item`) {
+                let ownerUnit = item.getOwnerUnit();
+                if (data.type == `use` && ownerUnit && ownerUnit != ige.client.selectedUnit) {
                     item.use();
-                } else if (data.type == 'stop') {
+                } else if (data.type == `stop`) {
                     item.stopUsing();
-                } else if (data.type == 'reload') {
+                } else if (data.type == `reload`) {
                     item.reload();
                 }
             } else {
-                if (data.type == 'hit') {
-                    item.effect.start('bulletHit');
+                if (data.type == `hit`) {
+                    item.effect.start(`bulletHit`);
                 }
             }
         }
@@ -230,57 +230,57 @@ var ClientNetworkEvents = {
 
     _onUi: function (data) {
         switch (data.command) {
-            case 'openItemShop':
-                ige.shop.openModdShop('item');
+            case `openItemShop`:
+                ige.shop.openModdShop(`item`);
                 break;
 
-            case 'openUnitShop':
-                ige.shop.openModdShop('unit');
+            case `openUnitShop`:
+                ige.shop.openModdShop(`unit`);
                 break;
 
-            case 'closeShop':
+            case `closeShop`:
                 ige.shop.closeShop();
                 break;
 
-            case 'showMenuAndSelectCurrentServer':
-            case 'showMenu':
+            case `showMenuAndSelectCurrentServer`:
+            case `showMenu`:
                 ige.menuUi.showMenu();
                 break;
 
-            case 'showMenuAndSelectBestServer':
+            case `showMenuAndSelectBestServer`:
                 ige.menuUi.showMenu(true);
                 break;
 
-            case 'showInputModal':
+            case `showInputModal`:
                 ige.playerUi.showInputModal(data);
                 break;
 
-            case 'showCustomModal':
+            case `showCustomModal`:
                 ige.playerUi.showCustomModal(data);
                 break;
 
-            case 'openWebsite':
+            case `openWebsite`:
                 ige.playerUi.openWebsite(data);
                 break;
-            case 'showWebsiteModal':
+            case `showWebsiteModal`:
                 ige.playerUi.showWebsiteModal(data);
                 break;
-            case 'showSocialShareModal':
+            case `showSocialShareModal`:
                 ige.playerUi.showSocialShareModal(data);
                 break;
-            case 'showFriendsModal':
+            case `showFriendsModal`:
                 ige.playerUi.showFriendsModal(data);
                 break;
-            case 'shopResponse':
+            case `shopResponse`:
                 ige.shop.purchaseWarning(data.type);
                 break;
         }
     },
 
     _onPlayAd: function (data) {
-        var player = ige.client.myPlayer;
-        if (typeof countAdImpression === 'function' && player && !player._stats.isAdBlockEnabled) {
-            countAdImpression(gameId, 'video');
+        let player = ige.client.myPlayer;
+        if (typeof countAdImpression === `function` && player && !player._stats.isAdBlockEnabled) {
+            countAdImpression(gameId, `video`);
         }
         ige.ad.play(data);
     },
@@ -288,29 +288,28 @@ var ClientNetworkEvents = {
     _onVideoChat: function (data) {
         if (data.command) {
             switch (data.command) {
-                case "joinGroup":
-                    switchRoom(data.groupId)
+                case `joinGroup`:
+                    switchRoom(data.groupId);
                     break;
-                case "leaveGroup":
-                    switchRoom(myID)
+                case `leaveGroup`:
+                    switchRoom(myID);
                     break;
-
             }
         }
-        console.log("videoChat", data)
+        console.log(`videoChat`, data);
     },
 
     _onUserJoinedGame: function (data) {
-        var user = data.user;
-        var server = data.server;
-        var game = data.game;
-        var gameName = data.gameName;
-        var gameSlug = data.gameSlug;
-        var friend = null;
+        let user = data.user;
+        let server = data.server;
+        let game = data.game;
+        let gameName = data.gameName;
+        let gameSlug = data.gameSlug;
+        let friend = null;
 
-        if (typeof allFriends != 'undefined') {
-            for (var i in allFriends) {
-                var friendObj = allFriends[i];
+        if (typeof allFriends !== `undefined`) {
+            for (let i in allFriends) {
+                let friendObj = allFriends[i];
 
                 if (friendObj._id === user) {
                     friend = friendObj;
@@ -319,18 +318,18 @@ var ClientNetworkEvents = {
             }
 
             if (friend && friend.local) {
-                var gameLink = $('.' + friend._id + '-game-list');
-                var url = '/play/' + gameSlug + '?server=' + server + '&joinGame=true';
+                let gameLink = $(`.${friend._id}-game-list`);
+                let url = `/play/${gameSlug}?server=${server}&joinGame=true`;
 
                 if (server) {
-                    var friendName = friend.local.username;
+                    let friendName = friend.local.username;
                     // causing error player disconnect
                     // ige.chat.xssFilters.inHTMLData(friend.local.username);
-                    var message = friendName + ' is now playing ' + gameName + '<a class="text-light ml-2 text-decoration" href="' + url + '" style="text-decoration: underline;">Join</a>';
+                    let message = `${friendName} is now playing ${gameName}<a class="text-light ml-2 text-decoration" href="${url}" style="text-decoration: underline;">Join</a>`;
                     // add message in chat
                     ige.chat.postMessage({
                         text: message,
-                        isHtml: true,
+                        isHtml: true
                     });
 
                     // update game link in friend list
@@ -339,8 +338,8 @@ var ClientNetworkEvents = {
                             {
                                 id: server,
                                 gameSlug: gameSlug,
-                                gameName: gameName,
-                            },
+                                gameName: gameName
+                            }
                         ];
                     }
                 } else {
@@ -349,7 +348,7 @@ var ClientNetworkEvents = {
                 }
 
                 // sort the friend array
-                allFriends.sort(function (a, b) {
+                allFriends.sort((a, b) => {
                     return b.currentServers.length - a.currentServers.length;
                 });
 
@@ -360,7 +359,7 @@ var ClientNetworkEvents = {
     },
 
     _onBuySkin: function (skinHandle) {
-        $(".btn-buy-skin[name='" + skinHandle + "']").html('Purchased');
+        $(`.btn-buy-skin[name='${skinHandle}']`).html(`Purchased`);
     },
 
     // _onTradeRequest: function (data) {
@@ -417,26 +416,26 @@ var ClientNetworkEvents = {
 
     _onTrade: function (msg, clientId) {
         switch (msg.type) {
-            case 'init': {
-                var player = ige.$(msg.from);
-                if (player && player._category === 'player') {
+            case `init`: {
+                let player = ige.$(msg.from);
+                if (player && player._category === `player`) {
                     ige.tradeUi.initiateTradeRequest(player);
                 }
                 break;
             }
 
-            case 'start': {
+            case `start`: {
                 var playerA = ige.$(msg.between.playerA);
                 var playerB = ige.$(msg.between.playerB);
-                if (playerA && playerA._category === 'player' && playerB && playerB._category === 'player') {
+                if (playerA && playerA._category === `player` && playerB && playerB._category === `player`) {
                     ige.tradeUi.startTrading(playerA, playerB);
                 }
                 break;
             }
 
-            case 'offer': {
-                var from = ige.$(msg.from);
-                var to = ige.$(msg.to);
+            case `offer`: {
+                let from = ige.$(msg.from);
+                let to = ige.$(msg.to);
 
                 if (from && to && from.tradingWith === to.id()) {
                     ige.tradeUi.receiveOfferingItems(msg.tradeItems);
@@ -444,73 +443,73 @@ var ClientNetworkEvents = {
                 break;
             }
 
-            case 'success': {
+            case `success`: {
                 var playerA = ige.$(msg.between.playerA);
                 var playerB = ige.$(msg.between.playerB);
                 delete playerA.tradingWith;
                 delete playerB.tradingWith;
                 delete playerA.isTrading;
                 delete playerB.isTrading;
-                $('#trade-div').hide();
+                $(`#trade-div`).hide();
                 break;
             }
 
-            case 'cancel': {
+            case `cancel`: {
                 var playerA = ige.$(msg.between.playerA);
                 var playerB = ige.$(msg.between.playerB);
                 delete playerA.tradingWith;
                 delete playerB.tradingWith;
                 delete playerA.isTrading;
                 delete playerB.isTrading;
-                $('#trade-div').hide();
+                $(`#trade-div`).hide();
                 break;
             }
         }
     },
 
     _onErrorLogs: function (logs) {
-        var element = document.getElementById('error-log-content');
+        let element = document.getElementById(`error-log-content`);
         for (actionName in logs) {
-            var log = logs[actionName];
-            element.innerHTML += "<li style='font-size:12px;'>" + log + '</li>';
+            let log = logs[actionName];
+            element.innerHTML += `<li style='font-size:12px;'>${log}</li>`;
             ige.client.errorLogs.push(log);
-            $('#dev-error-button').text('Errors (' + ige.client.errorLogs.length + ')');
+            $(`#dev-error-button`).text(`Errors (${ige.client.errorLogs.length})`);
         }
     },
 
     _onSound: function (data) {
         switch (data.cmd) {
-            case 'playMusic':
+            case `playMusic`:
                 var music = ige.game.data.music[data.id];
                 if (music) {
                     ige.sound.playMusic(music, undefined, undefined, data.id);
                 }
                 break;
-            case 'stopMusicForPlayer':
-            case 'stopMusic':
+            case `stopMusicForPlayer`:
+            case `stopMusic`:
                 ige.sound.stopMusic();
                 break;
-            case 'playMusicForPlayer':
+            case `playMusicForPlayer`:
                 var music = ige.game.data.music[data.music];
                 if (music) {
                     ige.sound.playMusic(music, undefined, undefined, data.music);
                 }
                 break;
-            case 'playMusicForPlayerRepeatedly':
+            case `playMusicForPlayerRepeatedly`:
                 var music = ige.game.data.music[data.music];
 
                 if (music) {
                     ige.sound.playMusic(music, undefined, true, data.music);
                 }
                 break;
-            case 'playSoundForPlayer':
+            case `playSoundForPlayer`:
                 var sound = ige.game.data.sound[data.sound];
                 if (sound) {
-                    var unit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
+                    let unit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
                     ige.sound.playSound(sound, (unit && unit._translate) || null, data.sound);
                 }
                 break;
-            case 'stopSoundForPlayer':
+            case `stopSoundForPlayer`:
                 ige.sound.stopSound(sound, data.sound);
                 break;
             default:
@@ -525,35 +524,35 @@ var ClientNetworkEvents = {
 
             // the particle emitter must be within myPlayer's camera viewing range
             if (entity && entity.particleEmitters[data.pid] && entity._translate.x > ige.client.vp1.camera._translate.x - 1000 && entity._translate.x < ige.client.vp1.camera._translate.x + 1000 && entity._translate.y > ige.client.vp1.camera._translate.y - 1000 && entity._translate.y < ige.client.vp1.camera._translate.y + 1000) {
-                var particleEmitter = entity.effect.particleEmitters[data.pid];
+                let particleEmitter = entity.effect.particleEmitters[data.pid];
 
-                if (data.action == 'start') {
+                if (data.action == `start`) {
                     particleEmitter.start();
-                } else if (data.action == 'stop') {
+                } else if (data.action == `stop`) {
                     particleEmitter.stop();
-                } else if (data.action == 'emitOnce') {
+                } else if (data.action == `emitOnce`) {
                     particleEmitter.emitOnce();
                 }
             }
         } else if (data.pid && data.position) {
-            //my unit
+            // my unit
             var entity = ige.client.vp1.camera._trackTranslateTarget;
-            var particle = ige.game.data.particleTypes[data.pid];
+            let particle = ige.game.data.particleTypes[data.pid];
             if (entity && particle && entity._translate.x > ige.client.vp1.camera._translate.x - 1000 && entity._translate.x < ige.client.vp1.camera._translate.x + 1000 && entity._translate.y > ige.client.vp1.camera._translate.y - 1000 && entity._translate.y < ige.client.vp1.camera._translate.y + 1000) {
                 if (particle.dimensions == undefined) {
                     particle.dimensions = { width: 5, height: 5 };
                 }
 
-                if (particle['z-index'] === undefined) {
-                    particle['z-index'] = {
+                if (particle[`z-index`] === undefined) {
+                    particle[`z-index`] = {
                         layer: 3,
-                        depth: 5,
+                        depth: 5
                     };
                 }
 
                 new IgeParticleEmitter() // Set the particle entity to generate for each particle
-                    .layer(particle['z-index'].layer)
-                    .depth(particle['z-index'].depth)
+                    .layer(particle[`z-index`].layer)
+                    .depth(particle[`z-index`].depth)
                     .color(particle.color)
                     .size(particle.dimensions.height, particle.dimensions.width)
                     .particle(Particle)
@@ -572,41 +571,41 @@ var ClientNetworkEvents = {
 
     _onCamera: function (data) {
         // camera zoom change
-        if (data.cmd == 'zoom') {
+        if (data.cmd == `zoom`) {
             ige.client.setZoom(data.zoom);
         }
         // track unit
-        if (data.cmd == 'track') {
-            var unit = ige.$(data.unitId);
+        if (data.cmd == `track`) {
+            let unit = ige.$(data.unitId);
             if (unit) {
                 ige.client.vp1.camera.trackTranslate(unit, ige.client._trackTranslateSmoothing);
             }
         }
 
-        if (data.cmd === 'positionCamera') {
+        if (data.cmd === `positionCamera`) {
             ige.client.positionCamera(data.position.x, data.position.y);
         }
     },
 
     _onGameSuggestion: function (data) {
-        if (data && data.type == 'show') {
-            $('#more-games').removeClass('slidedown-menu-animation').addClass('slideup-menu-animation');
-        } else if (data && data.type == 'hide') {
-            $('#more-games').removeClass('slideup-menu-animation').addClass('slidedown-menu-animation');
+        if (data && data.type == `show`) {
+            $(`#more-games`).removeClass(`slidedown-menu-animation`).addClass(`slideup-menu-animation`);
+        } else if (data && data.type == `hide`) {
+            $(`#more-games`).removeClass(`slideup-menu-animation`).addClass(`slidedown-menu-animation`);
         }
     },
 
     _onMinimapEvent: function (data) {
         if (data) {
             switch (data.type) {
-                case 'showUnit':
+                case `showUnit`:
                     var unit = ige.$(data.unitId);
                     if (unit) {
                         unit.showMinimapUnit(data.color);
                     }
                     break;
 
-                case 'hideUnit':
+                case `hideUnit`:
                     var unit = ige.$(data.unitId);
                     if (unit) {
                         unit.hideMinimapUnit();
@@ -614,9 +613,9 @@ var ClientNetworkEvents = {
                     break;
             }
         }
-    },
+    }
 };
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+if (typeof module !== `undefined` && typeof module.exports !== `undefined`) {
     module.exports = ClientNetworkEvents;
 }

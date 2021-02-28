@@ -1,15 +1,15 @@
 // var app, viewport, world;
-var IgeInitPixi = IgeClass.extend({
-    classId: 'IgeInitPixi',
-    componentId: 'pixi',
+let IgeInitPixi = IgeClass.extend({
+    classId: `IgeInitPixi`,
+    componentId: `pixi`,
 
     init: function () {
         var self = this;
 
         ige.addComponent(IgeInputComponent);
         ige.addComponent(IgePixiTexture);
-        var forceCanvas = JSON.parse(localStorage.getItem('forceCanvas')) || {};
-        
+        let forceCanvas = JSON.parse(localStorage.getItem(`forceCanvas`)) || {};
+
         this.app = new PIXI.Application({
             width: 800, // default: 800
             height: 600, // default: 600
@@ -17,7 +17,7 @@ var IgeInitPixi = IgeClass.extend({
             transparent: false, // default: false
             resolution: 1, // default: 1,
             autoResize: true,
-            forceCanvas: forceCanvas[gameId] || false,
+            forceCanvas: forceCanvas[gameId] || false
             // backgroundColor: 0xff00cc,
         });
         this.app.ticker.maxFPS = 60;
@@ -25,8 +25,8 @@ var IgeInitPixi = IgeClass.extend({
         PIXI.settings.ROUND_PIXELS = true;
 
         this.timeStamp = Date.now();
-        this.app.view.id = 'igeFrontBuffer';
-        document.getElementById('game-div').appendChild(this.app.view);
+        this.app.view.id = `igeFrontBuffer`;
+        document.getElementById(`game-div`).appendChild(this.app.view);
         ige.createFrontBuffer(true);
         // PIXI.settings.PRECISION_FRAGMENT = 'highp';
         this.app.renderer.autoDensity = true;
@@ -42,21 +42,20 @@ var IgeInitPixi = IgeClass.extend({
         this.box2dDebug.zIndex = 10;
         this.box2dDebug.tileMap = true;
         this.world.addChild(this.box2dDebug);
-        //this.world.addChild(this.mobileControls);
+        // this.world.addChild(this.mobileControls);
         this.isUpdateLayersOrderQueued = false;
-		
 
-		// make the mobileControls container fit to width and anchored to bottom
-		this.mobileControls.y = window.innerHeight - 540;
-		var scaleToFit = window.innerWidth/960;
-		this.mobileControls.scale.set(scaleToFit,scaleToFit);
-		
-		/*
+        // make the mobileControls container fit to width and anchored to bottom
+        this.mobileControls.y = window.innerHeight - 540;
+        let scaleToFit = window.innerWidth / 960;
+        this.mobileControls.scale.set(scaleToFit, scaleToFit);
+
+        /*
 		var test1 = new PIXI.Sprite.from('https://cache.modd.io/asset/spriteImage/1516038135827_guide.png', { crossOrigin: true });
 		test1.alpha = 0.2;
 		this.mobileControls.addChild(test1);
 		*/
-		 
+
         this.ticker = PIXI.Ticker.shared;
         this.loader = PIXI.Loader ? PIXI.Loader.shared : PIXI.loader;
 
@@ -67,12 +66,12 @@ var IgeInitPixi = IgeClass.extend({
         PIXI.Ticker.system.stop();
 
         var self = this;
-        var frameTick = function () {
+        let frameTick = function () {
             self.frameTick();
         };
         this.ticker.add(frameTick);
         var sort = function (children) {
-            children.sort(function (a, b) {
+            children.sort((a, b) => {
                 a.zIndex = a.zIndex || 0;
                 b.zIndex = b.zIndex || 0;
 
@@ -90,24 +89,24 @@ var IgeInitPixi = IgeClass.extend({
         };
 
         window.onresize = this.resize;
-        if (typeof ga != 'undefined' && ige.env != 'local') {
-            var renderingEngine = 'canvas';
+        if (typeof ga !== `undefined` && ige.env != `local`) {
+            let renderingEngine = `canvas`;
             if (this.app.renderer.context.gl) {
-                renderingEngine = 'webgl-' + this.app.renderer.context.webGLVersion;
+                renderingEngine = `webgl-${this.app.renderer.context.webGLVersion}`;
             }
-            ga('send', {
-                hitType: 'event',
-                eventCategory: 'Rendering Engine',
-                eventAction: renderingEngine,
+            ga(`send`, {
+                hitType: `event`,
+                eventCategory: `Rendering Engine`,
+                eventAction: renderingEngine
             });
         }
     },
     resize: function () {
         if (ige.pixi.viewport && ige.pixi.viewport.scale) {
-            var currentWindowHeight = window.innerHeight;
-            var currentWindowWidth = window.innerWidth;
-            var currentScale = ige.pixi.viewport.scale.x;
-            var ratioOfCurrentWindow = currentWindowWidth / ige.pixi.initialWindowWidth;
+            let currentWindowHeight = window.innerHeight;
+            let currentWindowWidth = window.innerWidth;
+            let currentScale = ige.pixi.viewport.scale.x;
+            let ratioOfCurrentWindow = currentWindowWidth / ige.pixi.initialWindowWidth;
             currentScale = currentScale * ratioOfCurrentWindow;
 
             // Resize the renderer
@@ -122,18 +121,18 @@ var IgeInitPixi = IgeClass.extend({
         }
     },
     viewport: function () {
-        var self = this;
-        var offset = 0;
+        let self = this;
+        let offset = 0;
         // PIXI.extras.Viewport = Viewport;
-        var viewport = new PIXI.extras.Viewport({
+        let viewport = new PIXI.extras.Viewport({
             screenWidth: 800,
             screenHeight: 600,
             worldWidth: this.world.worldWidth,
             worldHeight: this.world.worldHeight,
-            interaction: this.app.renderer.plugins.interaction, // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
+            interaction: this.app.renderer.plugins.interaction // the interaction module is important for wheel() to work properly when renderer.view is placed or scaled
         })
             .decelerate()
-            .on('drag-start', function (e) {
+            .on(`drag-start`, (e) => {
                 console.log(e.world);
                 // ige.pixi._mouseCord = {
                 //     x: e.world.x,
@@ -148,21 +147,21 @@ var IgeInitPixi = IgeClass.extend({
         // })
         // .drag();
 
-        viewport.on('snap-zoom-start', function () {
+        viewport.on(`snap-zoom-start`, () => {
             self.viewport.isZooming = true;
         });
 
-        viewport.on('snap-zoom-end', function () {
+        viewport.on(`snap-zoom-end`, () => {
             self.viewport.isZooming = false;
         });
 
         viewport.addChild(this.world);
         this.app.stage.addChild(viewport);
-		
-		// mobile controls should not follow the viewport...
-		this.app.stage.addChild(this.mobileControls);
 
-        var cull = new PIXI.extras.cull.Simple();
+        // mobile controls should not follow the viewport...
+        this.app.stage.addChild(this.mobileControls);
+
+        let cull = new PIXI.extras.cull.Simple();
         cull.addList(this.world.children);
         cull.cull(viewport.getVisibleBounds());
 
@@ -175,7 +174,7 @@ var IgeInitPixi = IgeClass.extend({
         // value = -value;
         // ige.pixi.viewport.zoom(-this.currentZoomValue);
         ige.pixi.currentZoomValue = value;
-        ige.pixi.viewport.snapZoom({ height: value, ease: 'easeOutQuad' }, true);
+        ige.pixi.viewport.snapZoom({ height: value, ease: `easeOutQuad` }, true);
     },
 
     frameTick: function () {
@@ -202,19 +201,19 @@ var IgeInitPixi = IgeClass.extend({
         ige.pixi.app.render();
     },
     updateAllEntities: function (timeStamp) {
-        var self = this;
-        var currentTime = Date.now();
+        let self = this;
+        let currentTime = Date.now();
         if (!ige.lastTickTime) ige.lastTickTime = currentTime;
-        var tickDelta = currentTime - ige.lastTickTime;
+        let tickDelta = currentTime - ige.lastTickTime;
 
         // var entityCount = {unit: 0, item:0, player:0, wall:0, projectile: 0, undefined: 0, floatingLabel: 0}
-        for (var entityId in ige.pixi.trackEntityById) {
+        for (let entityId in ige.pixi.trackEntityById) {
             if (ige.pixi.trackEntityById[entityId]._destroyed) {
                 delete ige.pixi.trackEntityById[entityId];
                 break;
             }
 
-            var entity = ige.$(entityId);
+            let entity = ige.$(entityId);
             if (entity) {
                 // while zooming in/out, scale both unit name labels, attribute bars, and chatBubble
                 if (self.viewport.isZooming) {
@@ -224,15 +223,15 @@ var IgeInitPixi = IgeClass.extend({
                     }
 
                     if (entity.attributeBars) {
-                        _.forEach(entity.attributeBars, function (attributeBar) {
-                            var bar = ige.$(attributeBar.id);
+                        _.forEach(entity.attributeBars, (attributeBar) => {
+                            let bar = ige.$(attributeBar.id);
                             bar.updateScale();
                             bar.updatePosition();
                         });
                     }
 
                     if (openChatBubble[entityId]) {
-                        var chatBubble = ige.$(openChatBubble[entityId]);
+                        let chatBubble = ige.$(openChatBubble[entityId]);
                         chatBubble.updateScale();
                         chatBubble.updatePosition();
                     }
@@ -255,14 +254,14 @@ var IgeInitPixi = IgeClass.extend({
 
                     // handle streamUpdateData
                     if (ige.client.myPlayer) {
-                        var updateQueue = ige.client.entityUpdateQueue[entityId];
+                        let updateQueue = ige.client.entityUpdateQueue[entityId];
                         if (updateQueue && updateQueue.length > 0) {
-                            var nextUpdate = updateQueue[0];
+                            let nextUpdate = updateQueue[0];
                             if (
                                 // Don't run if we're updating item's state/owner unit, but its owner doesn't exist yet
-                                entity._category == 'item' &&
+                                entity._category == `item` &&
                                 ((nextUpdate.ownerUnitId && ige.$(nextUpdate.ownerUnitId) == undefined) || // updating item's owner unit, but the owner hasn't been created yet
-                                    ((nextUpdate.stateId == 'selected' || nextUpdate.stateId == 'unselected') && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
+                                    ((nextUpdate.stateId == `selected` || nextUpdate.stateId == `unselected`) && entity.getOwnerUnit() == undefined)) // changing item's state to selected/unselected, but owner doesn't exist yet
                             ) {
                                 // console.log("detected update for item that don't have owner unit yet", entity.id(), nextUpdate)
                             } else {
@@ -283,18 +282,18 @@ var IgeInitPixi = IgeClass.extend({
                 }
 
                 if (entity._translate && !entity.isHidden()) {
-                    var x = entity._translate.x;
-                    var y = entity._translate.y;
-                    var rotate = entity._rotate.z;
+                    let x = entity._translate.x;
+                    let y = entity._translate.y;
+                    let rotate = entity._rotate.z;
 
-                    if (entity._category == 'item') {
-                        var ownerUnit = entity.getOwnerUnit();
+                    if (entity._category == `item`) {
+                        let ownerUnit = entity.getOwnerUnit();
                         if (ownerUnit) {
                             ownerUnit._processTransform(); // if ownerUnit's transformation hasn't been processed yet, then it'll cause item to drag behind. so we're running it now
-                            
+
                             // immediately rotate items for my own unit
                             if (ownerUnit == ige.client.selectedUnit) {
-                                if (entity._stats.currentBody && entity._stats.currentBody.jointType == 'weldJoint') {
+                                if (entity._stats.currentBody && entity._stats.currentBody.jointType == `weldJoint`) {
                                     rotate = ownerUnit._rotate.z;
                                 } else if (ownerUnit == ige.client.selectedUnit) {
                                     rotate = ownerUnit.angleToTarget; // angleToTarget is updated at 60fps
@@ -342,9 +341,9 @@ var IgeInitPixi = IgeClass.extend({
         if (ige.gameLoopTickHasExecuted) {
             ige.gameLoopTickHasExecuted = false;
         }
-    },
+    }
 });
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+if (typeof module !== `undefined` && typeof module.exports !== `undefined`) {
     module.exports = IgePixiMap;
 }
