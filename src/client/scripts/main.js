@@ -1,7 +1,7 @@
 
 let pathArray = window.location.href.split(`/`);
 let igeRoot = `http://${pathArray[2]}/engine/`;
-let igeClientRoot = `http://${pathArray[2]}/src/`;
+let igeClientRoot = `http://${pathArray[2]}`;
 
 console.log(`igeRoot`, igeRoot);
 
