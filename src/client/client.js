@@ -27,8 +27,7 @@ let Client = IgeClass.extend({
         self.loadedTextures = {};
 
         console.log(`var getUrl `, window.location.hostname);
-        if (window.location.hostname == `localhost`)
-            ige.env = `local`;
+        if (window.location.hostname === `localhost`) ige.env = `local`;
 
         self.entityUpdateQueue = {};
         self.errorLogs = [];

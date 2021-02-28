@@ -1,9 +1,15 @@
-
 let pathArray = window.location.href.split(`/`);
-let igeRoot = `http://${pathArray[2]}/engine/`;
-let igeClientRoot = `http://${pathArray[2]}`;
+let igeRoot = `${window.location.protocol}//${pathArray[2]}/engine/`;
+let igeClientRoot = `${window.location.protocol}//${pathArray[2]}`;
 
-console.log(`igeRoot`, igeRoot);
+$(document).ready(() => {
+    const igeCoreConfig = require(`./coreConfig.js`);
+
+    for (const file of igeCoreConfig.include) {
+        const loadToClient = file[0].indexOf(`c`) > -1;
+        if (loadToClient) require(igeRoot + file[2]);
+    }
+});
 
 window.igeLoader = (function () {
     // Load the engine stylesheet
@@ -16,45 +22,12 @@ window.igeLoader = (function () {
     // document.getElementsByTagName('head')[0].appendChild(css);
 
     let IgeLoader = function () {
-        let self = this;
-        let ccScript;
-
-        this._loadingCount = 0;
-
-        // Load the clientConfig.js file into browser memory
-        ccScript = document.createElement(`script`);
-        ccScript.src = `${igeRoot}CoreConfig.js`;
-        ccScript.onload = function () {
-            self.coreConfigReady();
-        };
-        ccScript.addEventListener(`error`, () => {
-            throw new Error(`ERROR LOADING ${igeRoot}CoreConfig.js` + ` - does it exist?`);
-        }, true);
-
-        document.getElementsByTagName(`head`)[0].appendChild(ccScript);
-    };
-
-    IgeLoader.prototype.coreConfigReady = function () {
-        let self = this;
-
-        if (typeof (igeCoreConfig) !== `undefined`) {
-            // Load the client config
-            ccScript = document.createElement(`script`);
-            ccScript.src = `${igeClientRoot}ClientConfig.js`;
-            ccScript.onload = function () {
-                self.clientConfigReady();
-            };
-            ccScript.addEventListener(`error`, () => {
-                throw new Error(`ERROR LOADING ClientConfig.js - does it exist?`);
-            }, true);
-
-            document.getElementsByTagName(`head`)[0].appendChild(ccScript);
-        } else {
-            throw new Error(`ERROR READING igeCoreConfig object - was it specified in CoreConfig.js?`);
-        }
+        this.clientConfigReady();
     };
 
     IgeLoader.prototype.clientConfigReady = function () {
+        console.log(igeCoreConfig);
+
         // Add the two array items into a single array
         this._coreList = igeCoreConfig.include;
         this._clientList = igeClientConfig.include;
