@@ -105,3 +105,6 @@ dist
 
 # Minified client file.
 client.min.js
+
+# Game JSON
+game.json
