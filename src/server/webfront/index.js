@@ -37,6 +37,7 @@ app.set(`view engine`, `ejs`);
 
 // Serve the static directory.
 app.use(`/`, express.static(config.webfront.staticDir));
+app.use(`/engine`, express.static(path.resolve(__dirname, `../../../engine`)));
 
 // Use routes.
 const indexRouter = require(`./routes/index.js`);
