@@ -9,7 +9,7 @@ class Renderer {
             forceCanvas: false
         });
 
-        this.renderer.scene = new PIXI.Container();
+        this.world = new PIXI.Container();
     }
 
     resize () {
@@ -17,6 +17,30 @@ class Renderer {
         const wH = window.innerHeight;
 
         this.renderer.resize(wW, wH);
+    }
+
+    viewport () {
+        this.viewport = new PIXI.extras.Viewport({
+            screenWidth: 800,
+            screenHeight: 800,
+
+            worldWidth: this.world.worldWidth,
+            worldHeight: this.world.worldHeight,
+
+            interaction: this.renderer.plugins.interaction
+        }).decelerate();
+
+        this.viewport.on(`snap-zoom-start`, () => this.viewport.isZooming = true);
+        this.viewport.on(`snap-zoom-end`, () => this.viewport.isZooming = false);
+
+        this.viewport.addChild(this.world);
+        this.renderer.stage.addChild(this.viewport);
+
+        this.cull = new PIXI.extras.cull.Simple();
+        this.cull.addList(this.world.children);
+        this.cull.cull(this.viewport.getVisibleBounds());
+
+        this.resize();
     }
 }
 
