@@ -1,4 +1,4 @@
-let Item = IgeEntityBox2d.extend({
+var Item = IgeEntityBox2d.extend({
     classId: `Item`,
 
     init: function (data, entityIdFromServer) {
@@ -28,7 +28,7 @@ let Item = IgeEntityBox2d.extend({
         // so if cost is set as 0 it should be usable item
         self.quantityCost = 1;
         self.quantityAtStartusing = null;
-        if (self._stats.cost && self._stats.cost.quantity !== undefined) {
+        if (self._stats.cost && self._stats.cost.quantity != undefined) {
             self.quantityCost = parseFloat(self._stats.cost.quantity);
         }
 
@@ -36,6 +36,9 @@ let Item = IgeEntityBox2d.extend({
         if (self._stats.states) {
             if (self._stats.states.unSelected && !self._stats.states.unselected) {
                 self._stats.states.unselected = self._stats.states.unSelected;
+            }
+            if (self._stats.states.unselected && !self._stats.states.unSelected) {
+                self._stats.states.unSelected = self._stats.states.unSelected;
             }
         }
 
@@ -69,7 +72,7 @@ let Item = IgeEntityBox2d.extend({
         }
         else if (ige.isClient) {
             self._hidden = self._stats.isHidden;
-            if (self._stats.currentBody === undefined || self._stats.currentBody.type === `none` || self._hidden) {
+            if (self._stats.currentBody == undefined || self._stats.currentBody.type == `none` || self._hidden) {
                 self.hide();
             }
             else {
@@ -94,14 +97,14 @@ let Item = IgeEntityBox2d.extend({
         let body = self._stats.currentBody;
 
         if (ige.isServer) {
-            if (this._stats.stateId === `dropped`) {
+            if (this._stats.stateId == `dropped`) {
                 this.lifeSpan(this._stats.lifeSpan);
                 self.mount(ige.$(`baseScene`));
                 this.streamMode(1);
             } else {
                 this.deathTime(undefined); // remove lifespan, so the entity stays indefinitely
                 if (body) {
-                    if (body.jointType !== `weldJoint`) {
+                    if (body.jointType != `weldJoint`) {
                         this.streamMode(1); // item that revolutes around unit
                     } else {
                         // if (body.jointType === 'weldJoint' ) {
@@ -111,7 +114,7 @@ let Item = IgeEntityBox2d.extend({
             }
         }
 
-        if (body && body.type !== `none`) {
+        if (body && body.type != `none`) {
             IgeEntityBox2d.prototype.updateBody.call(self, initTransform);
 
             self.show();
@@ -135,8 +138,8 @@ let Item = IgeEntityBox2d.extend({
         let body = this._stats.currentBody;
 
         // console.log("mounting on", obj._category)
-        if (obj && obj._category === `unit`) {
-            if (body && body.type !== `none`) {
+        if (obj && obj._category == `unit`) {
+            if (body && body.type != `none`) {
                 ige.devLog(`mounting item to unit `, body.unitAnchor.x, (-1 * body.unitAnchor.y));
 
                 this.width(body.width);
@@ -156,7 +159,7 @@ let Item = IgeEntityBox2d.extend({
         else {
             ige.devLog(`there's no unit to attach!`);
             // item is dropped
-            if (body && body.type !== `none`) {
+            if (body && body.type != `none`) {
                 this.width(body.width);
                 this.height(body.height);
             }
@@ -195,7 +198,7 @@ let Item = IgeEntityBox2d.extend({
         let transform;
         let oldOwner = ige.$(this.oldOwnerId);
 
-        if (newOwner === oldOwner)
+        if (newOwner == oldOwner)
             return;
 
         if (newOwner) {
@@ -238,7 +241,7 @@ let Item = IgeEntityBox2d.extend({
         let self = this;
         // if quantity is greater than cost, or item has infinite quantity
         // console.log(self._stats.quantity, quantityCost, self._stats.quantity >= quantityCost);
-        if (self._stats.quantity >= self.quantityCost || self._stats.quantity === undefined || isNaN(self._stats.quantity)) {
+        if (self._stats.quantity >= self.quantityCost || self._stats.quantity == undefined || isNaN(self._stats.quantity)) {
             return true;
         }
         return false;
@@ -254,15 +257,15 @@ let Item = IgeEntityBox2d.extend({
 
         // if item has no owner, or item is unusable type, or it cannot be used by its current owner, then return
         if (!owner ||
-            (self._stats.canBeUsedBy && self._stats.canBeUsedBy.length > 0 && self._stats.canBeUsedBy.indexOf(owner._stats.type) === -1) ||
-            self._stats.type === `unusable`) {
+			(self._stats.canBeUsedBy && self._stats.canBeUsedBy.length > 0 && self._stats.canBeUsedBy.indexOf(owner._stats.type) == -1) ||
+			self._stats.type === `unusable`) {
             return;
         }
 
         if (self.hasQuantityRemaining()) {
             ige.game.lastUsedItemId = self.id();
 
-            if ((self._stats.lastUsed + self._stats.fireRate < now) || self._stats.type === `consumable`) {
+            if ((self._stats.lastUsed + self._stats.fireRate < now) || self._stats.type == `consumable`) {
                 if (!self.canAffordItemCost()) {
                     ige.devLog(`cannot afford item cost`);
                     return;
@@ -271,7 +274,7 @@ let Item = IgeEntityBox2d.extend({
                 isUsed = true;
 
                 // item must be ready to fire (accordingly to fire rate), and must have ammo or have infinite ammo
-                if (ige.isClient && self._stats.type === `weapon` && self._stats.effects && self._stats.effects.use && self._stats.effects.use.animation) {
+                if (ige.isClient && self._stats.type == `weapon` && self._stats.effects && self._stats.effects.use && self._stats.effects.use.animation) {
                     self.applyAnimationById(self._stats.effects.use.animation);
                 }
 
@@ -281,27 +284,29 @@ let Item = IgeEntityBox2d.extend({
                     itemId: self.id()
                 });
 
-                if (ige.physics && self._stats.type === `weapon`) {
+                if (ige.physics && self._stats.type == `weapon`) {
                     if (self._stats.isGun) {
                         if (self._stats.bulletStartPosition) {
-                            let rotate = this._rotate.z;
-                            if (owner && self._stats.currentBody && self._stats.currentBody.jointType === `weldJoint`) {
+                            var rotate = this._rotate.z;
+                            if (owner && self._stats.currentBody && self._stats.currentBody.jointType == `weldJoint`) {
                                 rotate = owner._rotate.z;
                             }
 
-                            if (self.anchoredOffset === undefined) {
+                            if (self.anchoredOffset == undefined) {
                                 self.anchoredOffset = { x: 0, y: 0, rotate: 0 };
                             }
 
                             let offsetAngle = rotate;
-                            if (self._stats.flip === 1) {
+                            if (self._stats.flip == 1) {
                                 offsetAngle += Math.PI;
                             }
 
                             // item is flipped, then mirror the rotation
-                            let bulletY;
-                            if (owner._stats.flip === 1) bulletY = -self._stats.bulletStartPosition.y || 0;
-                            else bulletY = self._stats.bulletStartPosition.y || 0;
+                            if (owner._stats.flip == 1) {
+                                var bulletY = -self._stats.bulletStartPosition.y || 0;
+                            } else {
+                                var bulletY = self._stats.bulletStartPosition.y || 0;
+                            }
 
                             let bulletStartPosition = {
                                 x: (owner._translate.x + self.anchoredOffset.x) + (self._stats.bulletStartPosition.x * Math.cos(offsetAngle)) + (bulletY * Math.sin(offsetAngle)),
@@ -310,7 +315,7 @@ let Item = IgeEntityBox2d.extend({
 
                             if (
                                 this._stats.isGun &&
-                                (ige.isServer || (ige.isClient && ige.physics)) // render projectile on clientside if physics is enabled
+								(ige.isServer || (ige.isClient && ige.physics)) // render projectile on clientside if physics is enabled
                             ) {
                                 let defaultData = {
                                     rotate: rotate,
@@ -345,23 +350,23 @@ let Item = IgeEntityBox2d.extend({
                                     let projectile = new Projectile(data);
                                     ige.game.lastCreatedProjectileId = projectile.id();
                                 }
-                                if (this._stats.bulletType === `raycast`) {
+                                if (this._stats.bulletType == `raycast`) {
                                     // starting from unit center position
                                     let raycastStartPosition = {
                                         x: owner._translate.x + (Math.cos(this._rotate.z + Math.radians(-90))) + (Math.cos(this._rotate.z)),
                                         y: owner._translate.y + (Math.sin(this._rotate.z + Math.radians(-90))) + (Math.sin(this._rotate.z))
                                     };
 
-                                    if (self._stats.currentBody && (self._stats.currentBody.type === `spriteOnly` || self._stats.currentBody.type === `none`)) {
-                                        let unitAnchorX = (self._stats.currentBody.unitAnchor !== undefined) ? self._stats.currentBody.unitAnchor.x : 0;
-                                        let unitAnchorY = (self._stats.currentBody.unitAnchor !== undefined) ? self._stats.currentBody.unitAnchor.y : 0;
+                                    if (self._stats.currentBody && (self._stats.currentBody.type == `spriteOnly` || self._stats.currentBody.type == `none`)) {
+                                        let unitAnchorX = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.x : 0;
+                                        let unitAnchorY = (self._stats.currentBody.unitAnchor != undefined) ? self._stats.currentBody.unitAnchor.y : 0;
 
-                                        let endPosition = {
+                                        var endPosition = {
                                             x: (owner._translate.x + unitAnchorX) + (this._stats.bulletDistance * Math.cos(owner._rotate.z + Math.radians(-90))),
                                             y: (owner._translate.y + unitAnchorY) + (this._stats.bulletDistance * Math.sin(owner._rotate.z + Math.radians(-90)))
                                         };
                                     } else {
-                                        let endPosition = {
+                                        var endPosition = {
                                             x: (self._translate.x) + (this._stats.bulletDistance * Math.cos(self._rotate.z + Math.radians(-90))),
                                             y: (self._translate.y) + (this._stats.bulletDistance * Math.sin(self._rotate.z + Math.radians(-90)))
                                         };
@@ -369,7 +374,7 @@ let Item = IgeEntityBox2d.extend({
 
                                     let raycastMultipleCallback = function () {
                                         let def = {};
-                                        // let e_maxCount = 3;
+                                        // var e_maxCount = 3;
                                         let raycastCollidesWith = self._stats.raycastCollidesWith;
                                         def.m_points = [];
                                         def.m_normals = [];
@@ -386,14 +391,14 @@ let Item = IgeEntityBox2d.extend({
                                                 self.raycastTargets.push(entity);
                                             }
 
-                                            // let body = fixture.getBody();
-                                            // let userData = body.getUserData();
+                                            // var body = fixture.getBody();
+                                            // var userData = body.getUserData();
                                             // if (userData) {
-                                            //     if (userData === 0) {
-                                            //         // By returning -1, we instruct the calling code to ignore this fixture
-                                            //         // and continue the ray-cast to the next fixture.
-                                            //         return -1.0;
-                                            //     }
+                                            // 	if (userData == 0) {
+                                            // 		// By returning -1, we instruct the calling code to ignore this fixture
+                                            // 		// and continue the ray-cast to the next fixture.
+                                            // 		return -1.0;
+                                            // 	}
                                             // }
 
                                             def.m_points.push(point);
@@ -432,7 +437,7 @@ let Item = IgeEntityBox2d.extend({
 
                                 if (self._stats.recoilForce) {
                                     // apply recoil on its owner if item itself doesn't have physical body
-                                    if (self._stats.currentBody === undefined || self._stats.currentBody.type === `none` || self._stats.currentBody.type === `spriteOnly`) {
+                                    if (self._stats.currentBody == undefined || self._stats.currentBody.type == `none` || self._stats.currentBody.type == `spriteOnly`) {
                                         owner.applyForce(self._stats.recoilForce * Math.cos(owner._rotate.z + Math.radians(90)), self._stats.recoilForce * Math.sin(owner._rotate.z + Math.radians(90)));
                                     }
                                     else { // apply recoil on item
@@ -445,7 +450,7 @@ let Item = IgeEntityBox2d.extend({
                         let hitboxData = this._stats.damageHitBox;
 
                         if (hitboxData) {
-                            let rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
+                            var rotate = (owner.angleToTarget) ? owner.angleToTarget : 0;
                             let hitboxPosition = {
                                 x: (owner._translate.x) + (hitboxData.offsetX * Math.cos(rotate)) + (hitboxData.offsetY * Math.sin(rotate)),
                                 y: (owner._translate.y) + (hitboxData.offsetX * Math.sin(rotate)) - (hitboxData.offsetY * Math.cos(rotate))
@@ -471,14 +476,14 @@ let Item = IgeEntityBox2d.extend({
 
                             while (entities.length > 0) {
                                 let entity = entities.shift();
-                                if (entity && entity._category === `unit`) {
+                                if (entity && entity._category == `unit`) {
                                     entity.inflictDamage(damageData);
                                 }
                             }
                         }
                     }
                 }
-                else if (self._stats.type === `consumable`) { // item is not a gun (e.g. consumable)
+                else if (self._stats.type == `consumable`) { // item is not a gun (e.g. consumable)
                     // if cost quantity of consumable item is not defined or 0
                     // it should be 1 by default. Bcz 1 item will be consumed when fire.
                     // currently we dont have cost quantity setting in consumable items so
@@ -493,9 +498,9 @@ let Item = IgeEntityBox2d.extend({
                         // apply unit bonuses
                         let unitAttributeBonuses = self._stats.bonus.consume.unitAttribute;
                         if (unitAttributeBonuses) {
-                            for (let attrId in unitAttributeBonuses) {
+                            for (var attrId in unitAttributeBonuses) {
                                 if (attrData.attributes) {
-                                    let newValue = owner.attribute.getValue(attrId) + parseFloat(unitAttributeBonuses[attrId]);
+                                    var newValue = owner.attribute.getValue(attrId) + parseFloat(unitAttributeBonuses[attrId]);
                                     attrData.attributes[attrId] = owner.attribute.update(attrId, newValue, true);
                                 }
                             }
@@ -506,7 +511,7 @@ let Item = IgeEntityBox2d.extend({
                             let playerAttributeBonuses = self._stats.bonus.consume.playerAttribute;
                             if (playerAttributeBonuses) {
                                 for (attrId in playerAttributeBonuses) {
-                                    let newValue = player.attribute.getValue(attrId) + parseFloat(playerAttributeBonuses[attrId]);
+                                    var newValue = player.attribute.getValue(attrId) + parseFloat(playerAttributeBonuses[attrId]);
                                     attrData.attributes[attrId] = player.attribute.update(attrId, newValue, true);
                                 }
                             }
@@ -514,7 +519,7 @@ let Item = IgeEntityBox2d.extend({
                             if (ige.isServer && self._stats && self._stats.bonus && self._stats.bonus.consume && self._stats.bonus.consume.coin) {
                                 // ige.server.giveCoinToUser(player, self._stats.bonus.consume.coin, self._stats.name);
                                 // player.streamUpdateData([{
-                                //     coins: self._stats.bonus.consume.coin + player._stats.coins
+                                // 	coins: self._stats.bonus.consume.coin + player._stats.coins
                                 // }]);
                             }
                         }
@@ -537,7 +542,7 @@ let Item = IgeEntityBox2d.extend({
             this.playEffect(`use`);
         }
 
-        if (self._stats.quantity !== null || self._stats.quantity !== undefined) {
+        if (self._stats.quantity != null || self._stats.quantity != undefined) {
             // ige.devLog(isUsed, self._stats.quantity , self._stats.quantity > 0)
             if (isUsed && self._stats.quantity > 0) {
                 self.updateQuantity(self._stats.quantity - self.quantityCost);
@@ -550,14 +555,14 @@ let Item = IgeEntityBox2d.extend({
 
         if (ige.isServer) {
             // item's set to be removed when empty
-            if (this._stats.quantity === 0 && this._stats.removeWhenEmpty === true) {
+            if (this._stats.quantity == 0 && this._stats.removeWhenEmpty === true) {
                 let ownerUnit = this.getOwnerUnit();
                 this.remove();
                 if (ownerUnit) {
                     ownerUnit.streamUpdateData([{ itemIds: ownerUnit._stats.itemIds }]);
                 }
             }
-        } else if (ige.isClient && ige.client.selectedUnit === this.getOwnerUnit()) {
+        } else if (ige.isClient && ige.client.selectedUnit == this.getOwnerUnit()) {
             ige.itemUi.updateItemQuantity(this);
         }
     },
@@ -570,17 +575,17 @@ let Item = IgeEntityBox2d.extend({
         let player = owner && owner.getOwner();
 
         // item costs nothing to use
-        if (ability.cost === undefined) {
+        if (ability.cost == undefined) {
             return true;
         }
 
         // item has a cost
         if (player && owner && ability.cost) {
             // check unit attribute can afford cost
-            for (let attrName in ability.cost.unitAttributes) {
-                let cost = ability.cost.unitAttributes[attrName];
-                if (owner._stats.attributes[attrName] === undefined ||
-                    owner._stats.attributes[attrName].value < cost
+            for (var attrName in ability.cost.unitAttributes) {
+                var cost = ability.cost.unitAttributes[attrName];
+                if (owner._stats.attributes[attrName] == undefined ||
+					owner._stats.attributes[attrName].value < cost
                 ) {
                     canAffordCost = false;
                 }
@@ -588,9 +593,9 @@ let Item = IgeEntityBox2d.extend({
 
             // check player attributes can afford cost
             for (attrName in ability.cost.playerAttributes) {
-                let cost = ability.cost.playerAttributes[attrName];
-                if (player._stats.attributes[attrName] === undefined ||
-                    player._stats.attributes[attrName].value < cost
+                var cost = ability.cost.playerAttributes[attrName];
+                if (player._stats.attributes[attrName] == undefined ||
+					player._stats.attributes[attrName].value < cost
                 ) {
                     canAffordCost = false;
                 }
@@ -602,7 +607,7 @@ let Item = IgeEntityBox2d.extend({
             if (canAffordCost) {
                 for (attrName in ability.cost.unitAttributes) {
                     if (owner._stats.attributes[attrName]) {
-                        let newValue = owner._stats.attributes[attrName].value - ability.cost.unitAttributes[attrName];
+                        var newValue = owner._stats.attributes[attrName].value - ability.cost.unitAttributes[attrName];
                         // owner._stats.attributes[attrName].value -= ability.cost.unitAttributes[attrName];
                         owner.attribute.update(attrName, newValue, true);
                         unitAttributeChanged = true;
@@ -610,7 +615,7 @@ let Item = IgeEntityBox2d.extend({
                 }
                 for (attrName in ability.cost.playerAttributes) {
                     if (player._stats.attributes[attrName]) {
-                        let newValue = player._stats.attributes[attrName].value - ability.cost.playerAttributes[attrName];
+                        var newValue = player._stats.attributes[attrName].value - ability.cost.playerAttributes[attrName];
                         // player._stats.attributes[attrName].value -= ability.cost.playerAttributes[attrName];
                         player.attribute.update(attrName, newValue, true);
                         playerAttributeChanged = true;
@@ -618,7 +623,7 @@ let Item = IgeEntityBox2d.extend({
                 }
 
                 // calling stream for unit because there is delay in transferring attributes data
-                if (ige.isClient && owner._stats.clientId === ige.network.id() && player._stats.selectedUnitId === owner.id()) {
+                if (ige.isClient && owner._stats.clientId == ige.network.id() && player._stats.selectedUnitId == owner.id()) {
                     if (unitAttributeChanged) {
                         owner.attribute.refresh();
                     }
@@ -631,40 +636,40 @@ let Item = IgeEntityBox2d.extend({
         }
         else {
             return false;
-            // ItemComponent.prototype.log(`can't afford cost`);
+            ItemComponent.prototype.log(`can't afford cost`);
         }
     },
 
     // check if item can reach the target unit
     // canReachTarget: function(targetUnit) {
-    //     let self = this;
-    //     let owner = this.getOwnerUnit();
-    //     if (owner && targetUnit && self._stats.type === 'weapon') {
-    //         let positionA = owner._translate;
-    //         let positionB = targetUnit._translate;
-    //         if (positionA && positionB) {
-    //             let distanceX = Math.abs(positionA.x - positionB.x) - owner.width()/2 - targetUnit.width()/2;
-    //             let distanceY = Math.abs(positionA.y - positionB.y) - owner.height()/2 - targetUnit.height()/2;
-    //             let reach = 0;
-    //             if (self._stats.isGun) {
-    //                 let velocity = self._stats.bulletForce;
-    //                 let bulletLifespan = self.projectileData.lifeSpan
-    //                 reach = velocity * bulletLifespan / ige._fpsRate / 4;
-    //                 // console.log(velocity, bulletLifespan, reach)
-    //             } else {
-    //                 let hitboxData = this._stats.damageHitBox;
-    //                 if (hitboxData) {
-    //                     reach = hitboxData.offsetY
-    //                 }
-    //             }
+    // 	var self = this;
+    // 	var owner = this.getOwnerUnit();
+    // 	if (owner && targetUnit && self._stats.type == 'weapon') {
+    // 		var positionA = owner._translate;
+    // 		var positionB = targetUnit._translate;
+    // 		if (positionA && positionB) {
+    // 			var distanceX = Math.abs(positionA.x - positionB.x) - owner.width()/2 - targetUnit.width()/2;
+    // 			var distanceY = Math.abs(positionA.y - positionB.y) - owner.height()/2 - targetUnit.height()/2;
+    // 			var reach = 0;
+    // 			if (self._stats.isGun) {
+    // 				var velocity = self._stats.bulletForce;
+    // 				var bulletLifespan = self.projectileData.lifeSpan
+    // 				reach = velocity * bulletLifespan / ige._fpsRate / 4;
+    // 				// console.log(velocity, bulletLifespan, reach)
+    // 			} else {
+    // 				var hitboxData = this._stats.damageHitBox;
+    // 				if (hitboxData) {
+    // 					reach = hitboxData.offsetY
+    // 				}
+    // 			}
 
-    //             if (reach > distanceX && reach > distanceY) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
+    // 			if (reach > distanceX && reach > distanceY) {
+    // 				return true;
+    // 			}
+    // 		}
+    // 	}
 
-    //     return false;
+    // 	return false;
     // },
 
     startUsing: function () {
@@ -675,7 +680,7 @@ let Item = IgeEntityBox2d.extend({
         if (ige.isServer) {
             this.quantityAtStartusing = this._stats.quantity;
             this.streamUpdateData([{ isBeingUsed: true }]);
-        } else if (ige.isClient && owner === ige.client.selectedUnit) {
+        } else if (ige.isClient && owner == ige.client.selectedUnit) {
             this._stats.isBeingUsed = true;
         }
 
@@ -704,7 +709,7 @@ let Item = IgeEntityBox2d.extend({
             this.playEffect(`none`);
         } else if (ige.isServer) {
             let data = { isBeingUsed: false };
-            if (self._stats.quantity !== self.quantityAtStartusing) {
+            if (self._stats.quantity != self.quantityAtStartusing) {
                 data.quantity = self._stats.quantity;
             }
             this.streamUpdateData([data]);
@@ -719,15 +724,15 @@ let Item = IgeEntityBox2d.extend({
     },
 
     /**
-     * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
-     * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
-     */
+	 * get item's position based on its itemAnchor, unitAnchor, and current rotation value.
+	 * @param {int} froceRedraw offsets item's rotation. used for tweening item that's not anchored at 0,0. e.g. swinging a sword.
+	 */
     getAnchoredOffset: function (rotate) {
         let self = this;
         let offset = { x: 0, y: 0, rotate: 0 };
         let ownerUnit = this.getOwnerUnit();
 
-        if (ownerUnit && this._stats.stateId !== `dropped`) {
+        if (ownerUnit && this._stats.stateId != `dropped`) {
             // place item correctly based on its owner's transformation & its body's offsets.
             if (self._stats.currentBody) {
                 if (self._stats.currentBody.fixedRotation) {
@@ -737,21 +742,21 @@ let Item = IgeEntityBox2d.extend({
                 // get translation offset based on unitAnchor
                 if (self._stats.currentBody.unitAnchor) {
                     // if entity is flipped, then flip the keyFrames as well
-                    // let itemAngle = ownerUnit.angleToTarget
-                    // if (ige.isClient && ownerUnit === ige.client.selectedUnit) {
+                    // var itemAngle = ownerUnit.angleToTarget
+                    // if (ige.isClient && ownerUnit == ige.client.selectedUnit) {
                     // console.log(itemAngle, unitAnchoredPosition)
                     // }
 
                     let unitAnchorOffsetRotate = Math.radians(self._stats.currentBody.unitAnchor.rotation || 0);
-                    let unitAnchorOffsetX = self._stats.currentBody.unitAnchor.x || 0;
+                    var unitAnchorOffsetX = self._stats.currentBody.unitAnchor.x || 0;
                     let unitAnchorOffsetY = self._stats.currentBody.unitAnchor.y || 0;
 
                     // item is flipped, then mirror the rotation
-                    if (ownerUnit._stats.flip === 1) {
-                        let unitAnchorOffsetX = -self._stats.currentBody.unitAnchor.x || 0;
+                    if (ownerUnit._stats.flip == 1) {
+                        var unitAnchorOffsetX = -self._stats.currentBody.unitAnchor.x || 0;
                         rotate -= unitAnchorOffsetRotate;
                     } else {
-                        let unitAnchorOffsetX = self._stats.currentBody.unitAnchor.x || 0;
+                        var unitAnchorOffsetX = self._stats.currentBody.unitAnchor.x || 0;
                         rotate += unitAnchorOffsetRotate;
                     }
 
@@ -764,7 +769,7 @@ let Item = IgeEntityBox2d.extend({
                     let itemAnchorOffsetX = self._stats.currentBody.itemAnchor && self._stats.currentBody.itemAnchor.x || 0;
                     let itemAnchorOffsetY = self._stats.currentBody.itemAnchor && self._stats.currentBody.itemAnchor.y || 0;
 
-                    offset.x = (unitAnchoredPosition.x) + (itemAnchorOffsetX * Math.cos(rotate)) + (itemAnchorOffsetY * Math.sin(rotate));
+                    offset.x = (unitAnchoredPosition.x) + (itemAnchorOffsetX * Math.cos(rotate)) + (itemAnchorOffsetY * Math.sin(rotate)),
                     offset.y = (unitAnchoredPosition.y) + (itemAnchorOffsetX * Math.sin(rotate)) - (itemAnchorOffsetY * Math.cos(rotate));
                     offset.rotate = rotate;
                 }
@@ -799,7 +804,6 @@ let Item = IgeEntityBox2d.extend({
     streamUpdateData: function (queuedData) {
         let self = this;
         IgeEntity.prototype.streamUpdateData.call(this, queuedData);
-        let owner = self.getOwnerUnit();
 
         // ige.devLog("Item streamUpdateData ", data)
         // console.log(data, this._streamMode, this.id());
@@ -825,13 +829,13 @@ let Item = IgeEntityBox2d.extend({
                     case `stateId`:
                         if (ige.isClient) {
                             let stateId = newValue;
-                            let owner = this.getOwnerUnit();
+                            var owner = this.getOwnerUnit();
                             // update state only iff it's not my unit's item
                             self.setState(stateId);
 
-                            if (owner === ige.client.selectedUnit) {
+                            if (owner == ige.client.selectedUnit) {
                                 // don't repeat whip-out tween for my own unit as it has already been executed from unit.changeItem()
-                            } else if (stateId === `selected`) {
+                            } else if (stateId == `selected`) {
                                 self.applyAnimationForState(stateId);
 
                                 // whip-out the new item using tween
@@ -855,11 +859,11 @@ let Item = IgeEntityBox2d.extend({
                         }
                         break;
                         // case 'use':
-                        //     // only run client-side use for other players' units, because my player's unit's use() will get executed via actionComponent.
-                        //     if (ige.isClient) {
-                        //         self.use();
-                        //     }
-                        //     break;
+                        // 	// only run client-side use for other players' units, because my player's unit's use() will get executed via actionComponent.
+                        // 	if (ige.isClient) {
+                        // 		self.use();
+                        // 	}
+                        // 	break;
                     case `hidden`:
                         if (ige.isClient) {
                             if (newValue) {
@@ -871,9 +875,39 @@ let Item = IgeEntityBox2d.extend({
                         }
                         break;
 
+                    case `scaleBody`:
+                        if (ige.isServer) {
+                            // finding all attach entities before changing body dimensions
+                            if (self.jointsAttached) {
+                                let attachedEntities = {};
+                                for (let entityId in self.jointsAttached) {
+                                    let entity = self.jointsAttached[entityId];
+                                    if (entityId != self.id()) {
+                                        attachedEntities[entityId] = true;
+                                    }
+                                }
+                            }
+
+                            // attaching entities
+                            self._scaleBox2dBody(newValue);
+
+                            // for (var entityId in attachedEntities) {
+                            // 	var entity = ige.$(entityId);
+                            // 	// attaching item to owner
+                            // 	if (entity && entity._category == 'unit') {
+                            // 		var owner = self.getOwnerUnit();
+                            // 		if (owner.id() == entity.id()) {
+                            // 			self.mount(owner._pixiTexture);
+                            // 		}
+                            // 	}
+                            // }
+                        }
+                        break;
+
                     case `quantity`:
                         self.updateQuantity(newValue);
-                        if (ige.isClient && ige.client.selectedUnit === owner) {
+                        var owner = self.getOwnerUnit();
+                        if (ige.isClient && ige.client.selectedUnit == owner) {
                             ige.itemUi.updateItemQuantity(self);
                         }
                         break;
@@ -881,6 +915,7 @@ let Item = IgeEntityBox2d.extend({
                         ige.itemUi.updateItemDescription(this);
                         break;
                     case `slotIndex`:
+                        var owner = self.getOwnerUnit();
                         if (ige.isClient && owner) {
                             // unmount item when item is in backpack
                             if (newValue >= owner._stats.inventorySize) {
@@ -897,22 +932,22 @@ let Item = IgeEntityBox2d.extend({
     },
 
     /**
-     * Called every frame by the engine when this entity is mounted to the
-     * scenegraph.
-     * @param ctx The canvas context to render to.
-     */
+	 * Called every frame by the engine when this entity is mounted to the
+	 * scenegraph.
+	 * @param ctx The canvas context to render to.
+	 */
     _behaviour: function (ctx) {
         let self = this;
         let ownerUnit = this.getOwnerUnit();
-        if (ownerUnit && this._stats.stateId !== `dropped`) {
+        if (ownerUnit && this._stats.stateId != `dropped`) {
             rotate = self._rotate.z;
 
             if (self._stats.currentBody) {
-                if (self._stats.currentBody.jointType === `weldJoint`) {
+                if (self._stats.currentBody.jointType == `weldJoint`) {
                     rotate = ownerUnit._rotate.z;
-                } else if (self._stats.currentBody.type === `spriteOnly` || self._stats.currentBody.type === `dynamic`) {
+                } else if (self._stats.currentBody.type == `spriteOnly` || self._stats.currentBody.type == `dynamic`) {
                     if (self._stats.controls && self._stats.controls.mouseBehaviour.rotateToFaceMouseCursor) {
-                        if (ige.isServer || (ige.isClient && ige.client.selectedUnit === ownerUnit)) {
+                        if (ige.isServer || (ige.isClient && ige.client.selectedUnit == ownerUnit)) {
                             rotate = ownerUnit.angleToTarget;
                         }
                     }
@@ -957,9 +992,9 @@ let Item = IgeEntityBox2d.extend({
         }
     },
     /**
-     * Called every frame by the engine when this entity is mounted to the scenegraph.
-     * @param ctx The canvas context to render to.
-     */
+	 * Called every frame by the engine when this entity is mounted to the scenegraph.
+	 * @param ctx The canvas context to render to.
+	 */
     tick: function (ctx) {
         if (ige.isClient && !ige.client.itemRenderEnabled) return;
         // Call the IgeEntity (super-class) tick() method

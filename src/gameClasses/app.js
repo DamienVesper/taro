@@ -1,6 +1,6 @@
 
 // redirect android or iOS
-const isMobile = {
+var isMobile = {
     Android: function () {
         return navigator.userAgent.match(/Android/i);
     },
@@ -22,19 +22,24 @@ const isMobile = {
 
 };
 
-if (isMobile.Android()) window.location.replace(`https://play.google.com/store/apps/details?id=com.jaeyunnoh.braainsio`);
-else if (isMobile.iOS()) window.location.replace(`https://itunes.apple.com/us/app/braains.io/id1177022124?mt=8`);
+if (isMobile.Android())
+{
+    window.location.replace(`https://play.google.com/store/apps/details?id=com.jaeyunnoh.braainsio`);
+}
+else if (isMobile.iOS())
+{
+    window.location.replace(`https://itunes.apple.com/us/app/braains.io/id1177022124?mt=8`);
+}
 
-const prerollComplete = () => {
+function prerollComplete () {
     ige.client.adFinished.resolve();
 
     ige.client.adsDue = false;
     adIsPlaying = false;
-};
+}
 
 function showAipPreroll () {
     if (typeof aipPlayer !== `undefined`) {
-        // eslint-disable-next-line new-cap
         adplayer = new aipPlayer({
             AD_WIDTH: 960,
             AD_HEIGHT: 540,
@@ -54,7 +59,6 @@ function showAipPreroll () {
 
 function showAipMidroll () {
     if (typeof aipPlayer !== `undefined`) {
-        // eslint-disable-next-line new-cap
         adplayer = new aipPlayer({
             AD_WIDTH: 960,
             AD_HEIGHT: 540,
@@ -79,6 +83,7 @@ function getScript (src, callback) {
     let once = true;
     script.async = `async`;
     script.type = `text/javascript`;
+    script.charset = `UTF-8`;
     script.src = src;
     script.onload = script.onreadystatechange = function () {
         if (once && (!script.readyState || /loaded|complete/.test(script.readyState))) {

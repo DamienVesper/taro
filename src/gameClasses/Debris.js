@@ -28,9 +28,9 @@ let Debris = IgeEntityBox2d.extend({
             // cellsheet[0] = columns cellsheet[1] = rows
             // cellSheet[3] = first grid Id in cellsheet
             let log = false;
-            // if (self._stats.name === 'big box 1') {
-            //  console.log(cellSheet[1], cellSheet[2], self._stats.gid - cellSheet[3])
-            //  log = true;
+            // if (self._stats.name == 'big box 1') {
+            // 	console.log(cellSheet[1], cellSheet[2], self._stats.gid - cellSheet[3])
+            // 	log = true;
             // }
             this._stats.cellSheet = {
                 url: cellSheet[0],
@@ -43,8 +43,8 @@ let Debris = IgeEntityBox2d.extend({
             // ige.pixi.world.addChild(this._pixiTexture);
             // Define the texture this entity will use
             // self
-            //  .depth(3)
-            //  .layer(1)
+            // 	.depth(3)
+            // 	.layer(1)
             // Assign the sprite sheet texture to the entity.
             // Notice we are using the gameTexture[1] instead of the
             // gameTexture[0] as in the entity above. This allows us
@@ -102,7 +102,7 @@ let Debris = IgeEntityBox2d.extend({
     },
 
     resetPosition: function () {
-        if (this._stats.x === undefined || this._stats.y === undefined || this._stats.rotation === undefined)
+        if (this._stats.x == undefined || this._stats.y == undefined || this._stats.rotation == undefined)
             return;
 
         this.translateTo(this._stats.x, this._stats.y, 0);
@@ -132,10 +132,10 @@ let Debris = IgeEntityBox2d.extend({
         $(`#debris-modal`).modal();
     },
     /**
-  * Called every frame by the engine when this entity is mounted to the
-  * scenegraph.
-  * @param ctx The canvas context to render to.
-  */
+	 * Called every frame by the engine when this entity is mounted to the
+	 * scenegraph.
+	 * @param ctx The canvas context to render to.
+	 */
     _behaviour: function (ctx) {
         this.processBox2dQueue();
     },

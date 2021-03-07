@@ -19,13 +19,13 @@ let Cursor = IgeEntity.extend({
     },
 
     /**
-     * Called every frame by the engine when this entity is mounted to the scenegraph.
-     * @param ctx The canvas context to render to.
-     */
+	 * Called every frame by the engine when this entity is mounted to the scenegraph.
+	 * @param ctx The canvas context to render to.
+	 */
     tick: function (ctx) {
         // Call the IgeEntity (super-class) tick() method
         IgeEntity.prototype.tick.call(this, ctx);
     }
 });
 
-module.exports = Cursor;
+if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = Cursor; }
