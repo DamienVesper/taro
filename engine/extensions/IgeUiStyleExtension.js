@@ -1,10 +1,10 @@
 // TODO: Add "overflow" with automatic scroll-bars
 let IgeUiStyleExtension = {
     /**
-     * Gets / sets the color to use as the font color.
-     * @param {CSSColor, CanvasGradient, CanvasPattern=} color
-     * @return {*} Returns this when setting the value or the current value if none is specified.
-     */
+	 * Gets / sets the color to use as the font color.
+	 * @param {CSSColor, CanvasGradient, CanvasPattern=} color
+	 * @return {*} Returns this when setting the value or the current value if none is specified.
+	 */
     color: function (color) {
         if (color !== undefined) {
             this._color = color;
@@ -16,14 +16,14 @@ let IgeUiStyleExtension = {
     },
 
     /**
-     * Sets the current background texture and the repeatType
-     * to determine in which axis the image should be repeated.
-     * @param {IgeTexture=} texture
-     * @param {String=} repeatType Accepts "repeat", "repeat-x",
-     * "repeat-y" and "no-repeat".
-     * @return {*} Returns this if any parameter is specified or
-     * the current background image if no parameters are specified.
-     */
+	 * Sets the current background texture and the repeatType
+	 * to determine in which axis the image should be repeated.
+	 * @param {IgeTexture=} texture
+	 * @param {String=} repeatType Accepts "repeat", "repeat-x",
+	 * "repeat-y" and "no-repeat".
+	 * @return {*} Returns this if any parameter is specified or
+	 * the current background image if no parameters are specified.
+	 */
     backgroundImage: function (texture, repeatType) {
         if (texture && texture.image) {
             if (!repeatType) { repeatType = `no-repeat`; }
@@ -132,11 +132,11 @@ let IgeUiStyleExtension = {
     },
 
     /**
-     * Gets / sets the color to use as a background when
-     * rendering the UI element.
-     * @param {CSSColor, CanvasGradient, CanvasPattern=} color
-     * @return {*} Returns this when setting the value or the current value if none is specified.
-     */
+	 * Gets / sets the color to use as a background when
+	 * rendering the UI element.
+	 * @param {CSSColor, CanvasGradient, CanvasPattern=} color
+	 * @return {*} Returns this when setting the value or the current value if none is specified.
+	 */
     backgroundColor: function (color) {
         if (color !== undefined) {
             this._backgroundColor = color;
@@ -148,11 +148,11 @@ let IgeUiStyleExtension = {
     },
 
     /**
-     * Gets / sets the position to start rendering the background image at.
-     * @param {Number=} x
-     * @param {Number=} y
-     * @return {*} Returns this when setting the value or the current value if none is specified.
-     */
+	 * Gets / sets the position to start rendering the background image at.
+	 * @param {Number=} x
+	 * @param {Number=} y
+	 * @return {*} Returns this when setting the value or the current value if none is specified.
+	 */
     backgroundPosition: function (x, y) {
         if (x !== undefined && y !== undefined) {
             this._backgroundPosition = { x: x, y: y };

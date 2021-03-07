@@ -1,11 +1,11 @@
 let IgeUiPositionExtension = {
     /**
-     * Gets / sets the entity's x position relative to the left of
-     * the canvas.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the entity's x position relative to the left of
+	 * the canvas.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     left: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -55,12 +55,12 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the entity's x position relative to the right of
-     * the canvas.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the entity's x position relative to the right of
+	 * the canvas.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     right: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -110,12 +110,12 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the viewport's x position relative to the center of
-     * the entity parent.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the viewport's x position relative to the center of
+	 * the entity parent.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     center: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -167,12 +167,12 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the entity's y position relative to the top of
-     * the canvas.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the entity's y position relative to the top of
+	 * the canvas.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     top: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -222,12 +222,12 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the entity's y position relative to the bottom of
-     * the canvas.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the entity's y position relative to the bottom of
+	 * the canvas.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     bottom: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -277,12 +277,12 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the viewport's y position relative to the middle of
-     * the canvas.
-     * @param {Number} px
-     * @param {Boolean=} noUpdate
-     * @return {Number}
-     */
+	 * Gets / sets the viewport's y position relative to the middle of
+	 * the canvas.
+	 * @param {Number} px
+	 * @param {Boolean=} noUpdate
+	 * @return {Number}
+	 */
     middle: function (px, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -334,15 +334,15 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the geometry.x in pixels.
-     * @param {Number, String=} px Either the width in pixels or a percentage
-     * @param {Boolean=} lockAspect
-     * @param {Number=} modifier A value to add to the final width. Useful when
-     * you want to alter a percentage value by a certain number of pixels after
-     * it has been calculated.
-     * @param {Boolean=} noUpdate
-     * @return {*}
-     */
+	 * Gets / sets the geometry.x in pixels.
+	 * @param {Number, String=} px Either the width in pixels or a percentage
+	 * @param {Boolean=} lockAspect
+	 * @param {Number=} modifier A value to add to the final width. Useful when
+	 * you want to alter a percentage value by a certain number of pixels after
+	 * it has been calculated.
+	 * @param {Boolean=} noUpdate
+	 * @return {*}
+	 */
     width: function (px, lockAspect, modifier, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -405,15 +405,15 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Gets / sets the geometry.y in pixels.
-     * @param {Number=} px
-     * @param {Boolean=} lockAspect
-     * @param {Number=} modifier A value to add to the final height. Useful when
-     * you want to alter a percentage value by a certain number of pixels after
-     * it has been calculated.
-     * @param {Boolean=} noUpdate
-     * @return {*}
-     */
+	 * Gets / sets the geometry.y in pixels.
+	 * @param {Number=} px
+	 * @param {Boolean=} lockAspect
+	 * @param {Number=} modifier A value to add to the final height. Useful when
+	 * you want to alter a percentage value by a certain number of pixels after
+	 * it has been calculated.
+	 * @param {Boolean=} noUpdate
+	 * @return {*}
+	 */
     height: function (px, lockAspect, modifier, noUpdate) {
         if (px !== undefined) {
             if (px === null) {
@@ -501,10 +501,10 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Updates the UI position of every child entity down the scenegraph
-     * for this UI entity.
-     * @return {*}
-     */
+	 * Updates the UI position of every child entity down the scenegraph
+	 * for this UI entity.
+	 * @return {*}
+	 */
     updateUiChildren: function () {
         let arr = this._children;
         let arrCount;
@@ -529,10 +529,10 @@ let IgeUiPositionExtension = {
     },
 
     /**
-     * Sets the correct translate x and y for the viewport's left, right
-     * top and bottom co-ordinates.
-     * @private
-     */
+	 * Sets the correct translate x and y for the viewport's left, right
+	 * top and bottom co-ordinates.
+	 * @private
+	 */
     _updateUiPosition: function () {
         if (this._parent) {
             let parentGeom = this._parent._bounds2d;
@@ -542,9 +542,9 @@ let IgeUiPositionExtension = {
             let ratio;
 
             /* if (this._ignoreCamera && ige._currentCamera) {
-                // Handle cam ignore when calculating
-                parentGeom = parentGeom.dividePoint(ige._currentCamera._scale);
-            } */
+				// Handle cam ignore when calculating
+				parentGeom = parentGeom.dividePoint(ige._currentCamera._scale);
+			} */
 
             if (this._autoScaleX) {
                 // Get the percentage as an integer
