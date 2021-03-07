@@ -4,8 +4,8 @@ const xssFilters = require(`xss-filters`);
 const filter = require(`../../utils/filter.js`);
 
 class Player extends Entity {
-    constructor (name, x, z) {
-        super(x, z);
+    constructor (name, x, y) {
+        super(x, y);
 
         // Define the entity as a player.
         this.netType = 0;
