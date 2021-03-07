@@ -1,9 +1,9 @@
-let MiniMapComponent = IgeEntity.extend({
-    classId: `MiniMapComponent`,
-    componentId: `miniMap`,
+var MiniMapComponent = IgeEntity.extend({
+    classId: 'MiniMapComponent',
+    componentId: 'miniMap',
 
     init: function () {
-        let self = this;
+        var self = this;
         self.mapScale = {
             x: 0.05,
             y: 0.05
@@ -12,36 +12,36 @@ let MiniMapComponent = IgeEntity.extend({
         self.maxMapDimension = {
             height: 200,
             width: 200
-        };
+        }
         self.units = {};
     },
 
     createMiniMap: function () {
-        let self = this;
+        var self = this;
 
         // var texture = ige.pixi.app.renderer.generateTexture(ige.pixi.world);
         // self.miniMap = new PIXI.Sprite(texture);
-        let layerZIndex = [`floor`, `floor2`, `walls`, `trees`];
+        let layerZIndex = ["floor", "floor2", "walls", "trees"];
         self.miniMap = new PIXI.Container();
         self.miniMap.zIndex = 5;
-        layerZIndex.forEach((layerKey) => {
+        layerZIndex.forEach(function (layerKey) {
             self.miniMap.addChild(new PIXI.Sprite(ige.pixiMap.layersTexture[layerKey]));
-        });
-        ige.pixi.app.stage.addChild(self.miniMap);
+        })
+        ige.pixi.app.stage.addChild(self.miniMap)
     },
 
     updateMiniMap: function () {
-        let self = this;
+        var self = this;
         if (ige.game) {
-            let worldWidth = ige.game.data.map.width * ige.map.data.tilewidth;
-            let worldHeight = ige.game.data.map.height * ige.map.data.tileheight;
+            var worldWidth = ige.game.data.map.width * ige.map.data.tilewidth;
+            var worldHeight = ige.game.data.map.height * ige.map.data.tileheight;
 
             if (ige.mobileControls.isMobile) {
                 self.maxMapDimension.width = 50;
                 self.maxMapDimension.height = 50;
             }
             else {
-                if (ige.client.resolutionQuality === `low`) {
+                if (ige.client.resolutionQuality === 'low') {
                     self.maxMapDimension.width = 100;
                     self.maxMapDimension.height = 100;
                 }
@@ -67,15 +67,16 @@ let MiniMapComponent = IgeEntity.extend({
     },
 
     createUnit: function (id) {
-        let self = this;
+        var self = this;
         self.units[id] = new MiniMapUnit();
     },
     translateTo: function (id, x, y, z) {
-        let self = this;
+        var self = this;
         if (self.units[id]) {
-            self.units[id].translateTo(x, y, z);
+            self.units[id].translateTo(x, y, z)
         }
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = MiniMapComponent; }
+
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MiniMapComponent; }

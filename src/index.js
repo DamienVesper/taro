@@ -1,19 +1,20 @@
-let Game = IgeClass.extend({
-    classId: `Game`,
+var Game = IgeClass.extend({
+	classId: 'Game',
 
-    init: function (App, options) {
-        // Create the engine
-        ige = new IgeEngine(options);
+	init: function (App, options) {
+		// Create the engine
+		ige = new IgeEngine(options);
 
-        console.log(`ige initialized`, ige.isClient, ige.isServer);
-        if (ige.isClient) {
-            ige.client = new App();
-        }
+		console.log('ige initialized', ige.isClient, ige.isServer);
+		if (ige.isClient) {
+			ige.client = new App();
+		}
 
-        if (ige.isServer) {
-            ige.server = new App(options);
-        }
-    }
+		
+		if (ige.isServer) {
+			ige.server = new App(options);
+		}
+	}
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = Game; } else { let game = new Game(Client); }
+if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Game; } else { var game = new Game(Client); }

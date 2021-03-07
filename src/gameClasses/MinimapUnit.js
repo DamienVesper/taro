@@ -1,17 +1,18 @@
-let MiniMapUnit = IgeEntity.extend({
-    classId: `MiniMapUnit`,
-    componentId: `miniMapUnit`,
+var MiniMapUnit = IgeEntity.extend({
+    classId: 'MiniMapUnit',
+    componentId: 'miniMapUnit',
 
-    init: function (color = `0x00FF00`) {
+    init: function (color = "0x00FF00") {
+
         // IgeUiEntity.prototype.init.call(this);
 
-        this.category(`minimapUnit`);
+        this.category('minimapUnit');
         if (!ige.miniMap.miniMap) return this;
-        let graphics = new PIXI.Graphics();
+        var graphics = new PIXI.Graphics();
         graphics.beginFill(color);
 
         // set the line style to have a width of 5 and set the color to red
-        graphics.lineStyle(5, color);
+        graphics.lineStyle(5, color)
 
         if (ige.miniMap.mapScale) {
             graphics.drawRect(0, 0, 5 / ige.miniMap.mapScale.y, 5 / ige.miniMap.mapScale.x);
@@ -36,4 +37,4 @@ let MiniMapUnit = IgeEntity.extend({
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = MiniMapUnit; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = MiniMapUnit; }

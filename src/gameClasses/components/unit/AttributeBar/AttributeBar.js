@@ -1,18 +1,18 @@
-let AttributeBar = IgeEntity.extend({
-    classId: `AttributeBar`,
+var AttributeBar = IgeEntity.extend({
+    classId: 'AttributeBar',
 
     /**
      * @return {number} height of attribute bar
-     *
+     * 
      * returns valid height of attribute bar based on current zoom level
      */
     barHeight: function () {
-        let zoomLevel = ige.client.vp1.camera._scale.x;
+        var zoomLevel = ige.client.vp1.camera._scale.x;
         return 10 / (1.5 * zoomLevel);
     },
 
     borderRadius: function () {
-        let zoomLevel = ige.client.vp1.camera._scale.x;
+        var zoomLevel = ige.client.vp1.camera._scale.x;
         return 5 / zoomLevel;
     },
 
@@ -21,33 +21,33 @@ let AttributeBar = IgeEntity.extend({
             return 0;
         }
 
-        let spacePerCharacter = 15;
+        var spacePerCharacter = 15;
         return value.toString().length * spacePerCharacter;
     },
 
     init: function (containerId, attributeData, verticalOffset) {
-        let self = this;
+        var self = this;
 
         IgeEntity.prototype.init.call(self);
         self.id();
 
-        let containerEntity = ige.$(containerId);
-        let progressValueInPercent = (attributeData.value / attributeData.max) * 100;
+        var containerEntity = ige.$(containerId)
+        var progressValueInPercent = (attributeData.value / attributeData.max) * 100;
         progressValueInPercent = Math.max(0, Math.min(100, progressValueInPercent));
 
         // create attribute bar container
         self.attributeBarContainer = new IgeStyledElement()
             .applyStyle({
-                backgroundColor: `#ddd`,
+                backgroundColor: '#ddd',
                 bottom: verticalOffset,
                 height: self.barHeight(),
-                width: `100%`
+                width: '100%',
                 // borderRadius: self.borderRadius()
             })
-            .mount(containerEntity);
+            .mount(containerEntity)
 
         self.lastValue = {
-            value: typeof attributeData.value === `number` ? attributeData.value.toFixed(0) : 0,
+            value: typeof attributeData.value === 'number' ? attributeData.value.toFixed(0) : 0,
             max: attributeData.max,
             progressValueInPercent: progressValueInPercent
         };
@@ -55,11 +55,11 @@ let AttributeBar = IgeEntity.extend({
         if (attributeData.displayValue) {
             // create floating label for attirbute value
             self.attributeBarText = new FloatingText(self.lastValue.value, {
-                fontSize: `8px`,
+                fontSize: '8px',
                 attributeBarContainer: containerId
             });
             self.attributeBarText
-                .colorOverlay(`black`)
+                .colorOverlay('black')
                 .textAlignX(1)
                 .width(self.getTextWidth(self.lastValue.value))
                 .mount(self.attributeBarContainer);
@@ -71,7 +71,7 @@ let AttributeBar = IgeEntity.extend({
                 left: 0,
                 backgroundColor: attributeData.color,
                 height: self.barHeight(),
-                width: `${progressValueInPercent}%`
+                width: progressValueInPercent + '%',
                 // borderRadius: self.borderRadius()
             })
             .mount(self.attributeBarContainer);
@@ -81,15 +81,15 @@ let AttributeBar = IgeEntity.extend({
 
     /**
      * @param {object} attributeData
-     *
+     * 
      * sets width of value bar based on provided {attributeData} data and
      * updates text of value label if it exists
      */
     updateBar: function (attributeData) {
-        let self = this;
-        let progressValueInPercent = (attributeData.value / attributeData.max) * 100;
+        var self = this;
+        var progressValueInPercent = (attributeData.value / attributeData.max) * 100;
 
-        let newValue = attributeData.value.toFixed ? attributeData.value.toFixed(0) : 0;
+        var newValue = attributeData.value.toFixed ? attributeData.value.toFixed(0) : 0;
 
         if (self.lastValue.value && self.lastValue.value === newValue) {
             return;
@@ -97,7 +97,7 @@ let AttributeBar = IgeEntity.extend({
 
         progressValueInPercent = Math.max(0, Math.min(100, progressValueInPercent));
         progressValueInPercent = parseInt(progressValueInPercent);
-        let shouldUpdateBar = self.lastValue.progressValueInPercent !== progressValueInPercent;
+        var shouldUpdateBar = self.lastValue.progressValueInPercent !== progressValueInPercent;
 
         self.lastValue = {
             value: newValue,
@@ -109,13 +109,13 @@ let AttributeBar = IgeEntity.extend({
         if (shouldUpdateBar) {
             self.attributeBar
                 .applyStyle({
-                    width: `${progressValueInPercent}%`,
-                    backgroundColor: progressValueInPercent ? attributeData.color : null
+                    width: progressValueInPercent + '%',
+                    backgroundColor: progressValueInPercent ? attributeData.color : null,
                 });
         }
 
         if (self.attributeBarText) {
-            let width = self.getTextWidth(self.lastValue.value);
+            var width = self.getTextWidth(self.lastValue.value);
 
             self.attributeBarText.setText(self.lastValue.value);
             self.attributeBarText.width(width);
@@ -123,6 +123,6 @@ let AttributeBar = IgeEntity.extend({
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) {
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
     module.exports = AttributeBar;
 }

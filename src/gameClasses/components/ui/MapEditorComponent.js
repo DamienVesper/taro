@@ -1,14 +1,15 @@
-let MapEditorComponent = IgeEntity.extend({
-    classId: `MapEditorComponent`,
-    componentId: `mapEditor`,
+var MapEditorComponent = IgeEntity.extend({
+    classId: 'MapEditorComponent',
+    componentId: 'mapEditor',
 
     init: function () {
+
         // map editor global variables
-        let self = this;
+        var self = this;
         lastCurSelectedTileIndex = 1;
         curSelectedTileIndex = 0;
         showAllLayers = false;
-        curLayerPainting = `floor`;
+        curLayerPainting = "floor";
         addNewRegion = false;
         mouseIsDown = false;
         this.mouseDownOnMiniMap = false;
@@ -23,8 +24,8 @@ let MapEditorComponent = IgeEntity.extend({
         this.entity = {
             height: 100,
             width: 100,
-            type: `unitTypes`,
-            entity: ``,
+            type: 'unitTypes',
+            entity: '',
             rotation: 0,
             x: 0,
             y: 0
@@ -33,52 +34,52 @@ let MapEditorComponent = IgeEntity.extend({
         this.redo = [];
 
         // scale percentage in proportion to the world
-        let miniMapScale = 0.05;
+        var miniMapScale = .05;
 
-        $(document).on(`click`, (e) => {
-            let sandboxKeys = [`map-settings`, `,map-save`];
+        $(document).on("click", function (e) {
+            var sandboxKeys = ['map-settings', ',map-save'];
 
             if (sandboxKeys.includes(e.target.id)) {
-                self.removeSelectedClass();
+                self.removeSelectedClass()
                 e.preventDefault();
             }
         });
 
-        $(document).on(`keydown`, (e) => {
-            let isModalOpened = $(`.modal`).hasClass(`show`);
-            let isAnyInputFocused = $(`input`).is(`:focus`);
+        $(document).on("keydown", function (e) {
+            var isModalOpened = $(".modal").hasClass("show");
+            var isAnyInputFocused = $('input').is(":focus");
             // only change shortcuts when map tab is selected and no modal is in open state
-            if ($(`#mapEditor`).hasClass(`active`) && !isModalOpened && !isAnyInputFocused) {
-                let enterChar = String.fromCharCode(e.keyCode).toString();
+            if ($('#mapEditor').hasClass('active') && !isModalOpened && !isAnyInputFocused) {
+                var enterChar = String.fromCharCode(e.keyCode).toString();
                 enterChar = enterChar.toLowerCase();
-                self.mapShortcuts(e, enterChar);
+                self.mapShortcuts(e, enterChar)
             }
         });
 
-        $(`#entity-delete`).on(`click`, (e) => {
+        $('#entity-delete').on("click", function (e) {
             e.preventDefault();
-            let index = $(`[name=entity-index`).val();
-            self.upsertMapEntities({}, parseInt(index), `delete`);
-        });
-        $(`#entities-form`).on(`submit`, function (e) {
+            var index = $('[name=entity-index').val();
+            self.upsertMapEntities({}, parseInt(index), 'delete');
+        })
+        $('#entities-form').on("submit", function (e) {
             e.preventDefault();
-            let formValue = $(this).serializeArray();
-            let entity = {};
-            formValue.forEach((input) => {
-                let name = input.name.replace(`entity-`, ``);
+            var formValue = $(this).serializeArray();
+            var entity = {};
+            formValue.forEach(function (input) {
+                var name = input.name.replace('entity-', '');
                 entity[name] = input.value;
             });
-            if (entity.isEdit === `true`) {
+            if (entity.isEdit === 'true') {
                 self.upsertMapEntities(entity, parseInt(entity.index));
             }
             else {
                 self.entity = entity;
             }
-            $(`#entities-modal`).modal(`hide`);
+            $('#entities-modal').modal('hide');
         });
 
         this.listeners = {
-            eraser: function (e, entity) {
+            'eraser': function (e, entity) {
                 entity = entity || this;
                 addNewRegion = false;
                 self.isAddEntitiesEnabled = false;
@@ -89,17 +90,18 @@ let MapEditorComponent = IgeEntity.extend({
                 curSelectedTileIndex = 0;
 
                 self.addSelectedClass(entity, true);
-                self.removeSelectedClass(`eraser`);
+                self.removeSelectedClass('eraser');
             },
-            brush: function (e, entity) {
+            'brush': function (e, entity) {
                 entity = entity || this;
                 addNewRegion = false;
                 self.isAddEntitiesEnabled = false;
                 self.selectEntities = false;
                 curSelectedTileIndex = lastCurSelectedTileIndex;
 
+
                 self.addSelectedClass(entity, true);
-                self.removeSelectedClass(`brush`);
+                self.removeSelectedClass('brush');
             },
             'clear-layer': function (e, entity) {
                 entity = entity || this;
@@ -107,23 +109,23 @@ let MapEditorComponent = IgeEntity.extend({
                 self.isAddEntitiesEnabled = false;
                 self.selectEntities = false;
 
-                let promise = swal({
-                    text: `Are you sure you want to clear current selected layer?`,
-                    type: `warning`,
+                var promise = swal({
+                    text: "Are you sure you want to clear current selected layer?",
+                    type: 'warning',
                     showCancelButton: true,
-                    confirmButtonText: `Yes`
+                    confirmButtonText: 'Yes',
                 });
 
                 promise.then((result) => {
                     if (result.value) {
-                        let lIndex;
-                        let currentLayer = ige.game.data.map.layers.find((layer, key) => {
+                        var lIndex = undefined;
+                        var currentLayer = ige.game.data.map.layers.find(function (layer, key) {
                             lIndex = key;
                             return layer.name == curLayerPainting;
                         });
 
                         for (let i = 0; i < ige.map.data.layers[lIndex].data.length; i++) {
-                            ige.map.data.layers[lIndex].data[i] = 0;
+                            ige.map.data.layers[lIndex].data[i] = 0
                         }
 
                         ige.layersById[curLayerPainting].clearMap();
@@ -135,29 +137,29 @@ let MapEditorComponent = IgeEntity.extend({
                             window.updateSandboxMapLayers(lIndex, ige.map.data.layers[lIndex].data);
                         }
                     }
-                });
+                })
             },
-            mapsave: function (e, entity) {
+            'mapsave': function (e, entity) {
                 entity = entity || this;
                 ige.isMapUpdated = false;
                 self.isAddEntitiesEnabled = false;
                 self.selectEntities = false;
                 ige.mapEditor.isMapChangeAndNotSaved = false;
-                let map = _.cloneDeep(ige.map.data);
+                var map = _.cloneDeep(ige.map.data);
                 map.tilewidth = ige.scaleMapDetails.originalTileWidth;
                 map.tileheight = ige.scaleMapDetails.originalTileHeight;
                 window.saveMap(map);
             },
-            add_region: function (e, entity) {
+            'add_region': function (e, entity) {
                 entity = entity || this;
                 addNewRegion = !addNewRegion;
                 self.isAddEntitiesEnabled = false;
                 self.selectEntities = false;
 
                 self.addSelectedClass(entity);
-                self.removeSelectedClass(`add_region`);
+                self.removeSelectedClass('add_region');
             },
-            fill: function (e, entity) {
+            'fill': function (e, entity) {
                 entity = entity || this;
                 addNewRegion = false;
                 self.isAddEntitiesEnabled = false;
@@ -168,45 +170,47 @@ let MapEditorComponent = IgeEntity.extend({
                 }
 
                 self.addSelectedClass(entity, true);
-                self.removeSelectedClass(`fill`);
+                self.removeSelectedClass('fill');
             },
-            add_entities: function (e, entity) {
+            'add_entities': function (e, entity) {
                 entity = entity || this;
                 self.isAddEntitiesEnabled = true;
                 addNewRegion = false;
                 self.selectEntities = false;
 
                 self.addSelectedClass(entity, true);
-                self.removeSelectedClass(`add_entities`);
+                self.removeSelectedClass('add_entities');
                 self.openEntitiesModal(self.entity);
             },
-            select_entity: function (e, entity) {
+            'select_entity': function (e, entity) {
                 entity = entity || this;
                 self.selectEntities = true;
                 addNewRegion = false;
                 self.isAddEntitiesEnabled = false;
 
                 self.addSelectedClass(entity, true);
-                self.removeSelectedClass(`select_entity`);
-            }
+                self.removeSelectedClass('select_entity');
+            },
         };
 
-        window.addEventListener(`beforeunload`, (event) => {
+        window.addEventListener("beforeunload", function (event) {
             if (autoSave && ige.mapEditor.isMapChangeAndNotSaved) {
-                event.returnValue = `You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?`;
+                event.returnValue = "You have unsaved changes on this page. Do you want to leave this page and discard your changes or stay on this page?";
                 return true;
             }
         });
+
+
     },
-    undoMap (e) {
-        let mapData = this.undo.pop();
+    undoMap(e) {
+        var mapData = this.undo.pop();
         if (!mapData) return;
 
         ige.mapEditor.redo.push(JSON.parse(JSON.stringify(ige.map.data)));
         mapData = JSON.parse(JSON.stringify(mapData));
         ige.map.data = JSON.parse(JSON.stringify(mapData));
 
-        this.applyDataToMap(ige.map.data);
+        this.applyDataToMap(ige.map.data)
         if (autoSave) {
             ige.mapEditor.isMapChangeAndNotSaved = true;
         }
@@ -214,8 +218,8 @@ let MapEditorComponent = IgeEntity.extend({
             window.updateSandboxMapLayers(lIndex, ige.map.data.layers[lIndex].data);
         }
     },
-    redoMap () {
-        let mapData = ige.mapEditor.redo.pop();
+    redoMap() {
+        var mapData = ige.mapEditor.redo.pop();
         if (!mapData) return;
 
         ige.mapEditor.undo.push(JSON.parse(JSON.stringify(ige.map.data)));
@@ -230,17 +234,17 @@ let MapEditorComponent = IgeEntity.extend({
             window.updateSandboxMapLayers(lIndex, ige.map.data.layers[lIndex].data);
         }
     },
-    applyDataToMap (mapData) {
-        let mapHeight = mapData.height;
-        let mapWidth = mapData.width;
-        let z;
+    applyDataToMap(mapData) {
+        var mapHeight = mapData.height,
+            mapWidth = mapData.width,
+            z;
 
-        for (let layer in ige.layersById) {
-            let layerIndex = this.getLayerIndexFromName(layer);
+        for (var layer in ige.layersById) {
+            var layerIndex = this.getLayerIndexFromName(layer);
             layerData = mapData.layers[layerIndex];
             layerData = layerData.data;
 
-            if (ige.layersById[layer].type === `tilelayer`) {
+            if (ige.layersById[layer].type === 'tilelayer') {
                 for (y = 0; y < mapHeight; y++) {
                     for (x = 0; x < mapWidth; x++) {
                         z = x + (y * mapWidth);
@@ -251,7 +255,7 @@ let MapEditorComponent = IgeEntity.extend({
                                 currentTexture = layerData[z];
                                 if (currentTexture) {
                                     ige.layersById[layer].paintTile(x, y, this.getTilesheetData().tindex, currentTexture);
-                                    let tileIndex = (x) + ((y) * ige.map.data.width);
+                                    var tileIndex = (x) + ((y) * ige.map.data.width);
                                     ige.map.data.layers[layerIndex].data[tileIndex] = currentTexture;
                                 }
                             }
@@ -262,14 +266,14 @@ let MapEditorComponent = IgeEntity.extend({
             }
         }
     },
-    drawTile () {
+    drawTile() {
         // main canvas tile
         ige.mapEditor.tileMap = new IgeTileMap2d()
-            .id(`Tile_Map`)
+            .id('Tile_Map')
             .tileWidth(ige.scaleMapDetails.originalTileWidth)
             .tileHeight(ige.scaleMapDetails.originalTileHeight)
             .gridSize(ige.game.data.map.width, ige.game.data.map.height)
-            .hoverColor(`#6000ff70` || `#6000ff`)
+            .hoverColor("#6000ff70" || "#6000ff")
             .layer(5)
             .depth(5)
             .drawGrid(1)
@@ -279,18 +283,19 @@ let MapEditorComponent = IgeEntity.extend({
         this.generateTilesheet();
     },
     generateTilesheet: function () {
+
         ige.mapEditor.tilesheet = new IgeTileMap2d()
-            .id(`Tilesheet_Map`)
+            .id('Tilesheet_Map')
             .layer(10)
             .drawGrid(true)
             .drawMouse(true)
-            .hoverColor(`#6000ff70` || `#6000ff`)
+            .hoverColor("#6000ff70" || "#6000ff")
             .highlightOccupied(true)
             .drawMouse(true)
-            .mouseUp(() => {
+            .mouseUp(function () {
                 if (ige.game.data.isDeveloper) {
-                    let tilePosition = ige.mapEditor.tilesheet.pointToTile(ige.client.vp2.mousePos());
-                    let gridX = ige.mapEditor.tilesheet._gridSize.x;
+                    var tilePosition = ige.mapEditor.tilesheet.pointToTile(ige.client.vp2.mousePos());
+                    var gridX = ige.mapEditor.tilesheet._gridSize.x;
 
                     tileIndex = tilePosition.x + (tilePosition.y * gridX) + 1;
 
@@ -300,10 +305,10 @@ let MapEditorComponent = IgeEntity.extend({
             })
             .mount(ige.client.tilesheetScene);
 
-        let callbackForTexture = function () {
+        var callbackForTexture = function () {
             // console.log(ige.client.tilesheetTexture._sizeX, ige.client.tilesheetTexture._sizeY)
-            let width = ige.client.tilesheetTexture._sizeX / 4;
-            let height = ige.client.tilesheetTexture._sizeY / 4;
+            var width = ige.client.tilesheetTexture._sizeX / 4;
+            var height = ige.client.tilesheetTexture._sizeY / 4;
             if (ige.client.tilesheetTexture._sizeX < 400 && ige.client.tilesheetTexture._sizeX < 400) {
                 width = ige.client.tilesheetTexture._sizeX;
                 height = ige.client.tilesheetTexture._sizeY;
@@ -329,41 +334,41 @@ let MapEditorComponent = IgeEntity.extend({
                 .height(height)
                 .camera.translateTo(width / 2, height / 2, 0);
 
-            ige.mapEditor.texture.translateTo(width / 2, height / 2, 0);
-        };
+            ige.mapEditor.texture.translateTo(width / 2, height / 2, 0)
+        }
 
         ige.client.tilesheetTexture = new IgeTexture(ige.game.data.map.tilesets[0].image, callbackForTexture);
     },
     mapShortcuts: function (e, char) {
         if (!ige.game.data.isDeveloper) return;
         switch (char) {
-            case `a`:
-                this.listeners.add_entities(e, $(`#add_entities`));
+            case 'a':
+                this.listeners["add_entities"](e, $('#add_entities'));
                 break;
-            case `b`:
-                this.listeners.brush(e, $(`#brush`));
+            case 'b':
+                this.listeners["brush"](e, $('#brush'));
                 break;
-            case `c`:
-                this.listeners[`clear-layer`](e, $(`#clear-layer`));
+            case 'c':
+                this.listeners["clear-layer"](e, $('#clear-layer'));
                 break;
-            case `e`:
-                this.listeners.eraser(e, $(`#eraser`));
+            case 'e':
+                this.listeners["eraser"](e, $('#eraser'));
                 break;
-            case `f`:
-                this.listeners.fill(e, $(`#fill`));
+            case 'f':
+                this.listeners["fill"](e, $('#fill'));
                 break;
-            case `r`:
-                this.listeners.add_region(e, $(`#add_region`));
+            case 'r':
+                this.listeners["add_region"](e, $('#add_region'));
                 break;
-            case `s`:
-                this.listeners.select_entity(e, $(`#select_entity`));
+            case 's':
+                this.listeners["select_entity"](e, $('#select_entity'));
                 break;
-            case `z`:
+            case 'z':
                 if (e.ctrlKey) {
                     this.undoMap(e);
                 }
                 break;
-            case `y`:
+            case 'y':
                 if (e.ctrlKey) {
                     this.redoMap(e);
                 }
@@ -372,60 +377,62 @@ let MapEditorComponent = IgeEntity.extend({
     },
     createMiniMap: function () {
         // scale percentage in proportion to the world
-        let miniMapScale = 0.05;
-        let self = this;
-        self.divExcludedFromPaintingTileIds = [`eraser`, `brush`, `add_region`, `fill`, `gameEditor_buttons`, `gameEditor_menu`, `editor-div`, `layer_menu`];
-        self.layersIds = [`li_trees_list`, `li_debris_list`, `li_walls_list`, `li_floor2_list`, `li_floor_list`, `layer_menu`, `li_floor`, `li_trees`, `li_debris`, `li_walls`, `li_floor2`];
+        var miniMapScale = .05;
+        var self = this;
+        self.divExcludedFromPaintingTileIds = ['eraser', 'brush', 'add_region', 'fill', 'gameEditor_buttons', 'gameEditor_menu', 'editor-div', 'layer_menu'];
+        self.layersIds = ['li_trees_list', 'li_debris_list', 'li_walls_list', 'li_floor2_list', 'li_floor_list', 'layer_menu', 'li_floor', 'li_trees', 'li_debris', 'li_walls', 'li_floor2'];
         ige.client.minimapVp = new IgeViewport()
-            .id(`minimapVp`)
+            .id('minimapVp')
             .layer(7)
             .width(200)
             .height(200)
             .autoSize(false)
             .scene(ige.client.mainScene)
             .drawBounds(true)
-            .mouseDown((event, evc) => {
+            .mouseDown(function (event, evc) {
                 // console.log(self.checkIfClickedMiniMap(event.pageX, event.pageY))
                 if (self.checkIfClickedMiniMap(event.pageX, event.pageY)) {
                     self.mouseDownOnMiniMap = true;
                     self.positionViewPortRect();
                 }
             })
-            .mouseMove((event, evc) => {
+            .mouseMove(function (event, evc) {
                 if (self.mouseDownOnMiniMap && event.which === 1) {
                     self.positionCameraOnMiniClick(event.pageX, event.pageY);
                 }
             })
-            .mouseUp(() => {
+            .mouseUp(function () {
                 self.mouseDownOnMiniMap = false;
             })
-            .borderColor(`#0bcc38`)
-            .borderWidth(`4px`)
+            .borderColor('#0bcc38')
+            .borderWidth('4px')
             .mount(ige);
 
         ige.client.minimapVp.camera._scale.x = miniMapScale;
         ige.client.minimapVp.camera._scale.y = miniMapScale;
 
+
+
         // position when the window resizes
-        $(window).resize(() => {
+        $(window).resize(function () {
             self.positionMiniMap(miniMapScale);
             self.positionViewPortRect();
         });
 
-        $(document).on(`mousemove`, (event) => {
+        $(document).on("mousemove", function (event) {
             self.updateWorldXYCoords(event.pageX, event.pageY);
-            let drawMouse = false;
+            var drawMouse = false;
             if (self.selectEntities || self.divExcludedFromPaintingTileIds.includes(event.target.id) || self.layersIds.includes(event.target.id)) {
                 // do nothing
             }
             else {
-                if (($(`#mapEditor`).hasClass(`active`)) && (self.checkBrushToolSelected() || $(`#add_region`).hasClass(`editordiv-hover`))) {
+                if (($('#mapEditor').hasClass('active')) && (self.checkBrushToolSelected() || $('#add_region').hasClass('editordiv-hover'))) {
                     if (ige.game.data.isDeveloper && !addNewRegion) {
                         self.positionCurTextureBox(event);
                         drawMouse = true;
                     }
                     else {
-                        if (event.which === 1 && !self.mouseDownOnMiniMap && event.target.id == `igeFrontBuffer`) {
+                        if (event.which === 1 && !self.mouseDownOnMiniMap && event.target.id == 'igeFrontBuffer') {
                             self.drawingRegion = true;
                             self.drawNewRegion(event);
                         }
@@ -440,7 +447,8 @@ let MapEditorComponent = IgeEntity.extend({
             }
         });
 
-        $(document).on(`mouseup`, function (event) {
+
+        $(document).on("mouseup", function (event) {
             if (self.selectEntities) {
                 return;
             }
@@ -453,15 +461,15 @@ let MapEditorComponent = IgeEntity.extend({
             }
         });
 
-        $(`canvas`).on(`mousedown`, (event) => {
-            if (($(`#mapEditor`).hasClass(`active`)) && self.checkBrushToolSelected() && !self.layersIds.includes(event.target.id)) {
-                if (ige._selectedViewport.id() === `vp1` && event.which === 1 && !ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)) {
+        $('canvas').on("mousedown", function (event) {
+            if (($('#mapEditor').hasClass('active')) && self.checkBrushToolSelected() && !self.layersIds.includes(event.target.id)) {
+                if (ige._selectedViewport.id() === 'vp1' && event.which === 1 && !ige.mapEditor.checkIfClickedMiniMap(event.pageX, event.pageY)) {
                     ige.mapEditor.undo.push(JSON.parse(JSON.stringify(ige.map.data)));
                 }
             }
         });
 
-        $(`canvas`).on(`click`, (event) => {
+        $('canvas').on("click", function (event) {
             if (self.selectEntities) {
                 return;
             }
@@ -470,8 +478,8 @@ let MapEditorComponent = IgeEntity.extend({
                 self.entity.y = self.mouseCoordinatesWRTVp.y;
                 let bodies = ige.game.data[self.entity.type] && ige.game.data[self.entity.type][self.entity.entity].bodies;
                 if (bodies) {
-                    let defaultBody = _.find(bodies, (value, key) => {
-                        if (key.toLowerCase() === `default` || value.name.toLowerCase() === `default`)
+                    let defaultBody = _.find(bodies, function (value, key) {
+                        if (key.toLowerCase() === 'default' || value.name.toLowerCase() === 'default')
                             return true;
                         return false;
                     }) || {};
@@ -482,15 +490,15 @@ let MapEditorComponent = IgeEntity.extend({
                 return;
             }
             mouseIsDown = true;
-            if (($(`#mapEditor`).hasClass(`active`)) && mouseIsDown) {
+            if (($('#mapEditor').hasClass('active')) && mouseIsDown) {
                 if (addNewRegion) {
-                    if (!self.checkIfClickedMiniMap(event.pageX, event.pageY) && event.target.id == `igeFrontBuffer`) {
+                    if (!self.checkIfClickedMiniMap(event.pageX, event.pageY) && event.target.id == 'igeFrontBuffer') {
                         self.drawNewRegion(event);
                     }
                 }
                 else {
                     // && !$('#tile-selection-modal').hasClass('show')
-                    if (($(`#mapEditor`).hasClass(`active`)) && self.checkBrushToolSelected() && !self.layersIds.includes(event.target.id)) {
+                    if (($('#mapEditor').hasClass('active')) && self.checkBrushToolSelected() && !self.layersIds.includes(event.target.id)) {
                         ige.mapEditor.mouseDown = true;
                         self.mouseDownEditor(event);
                     }
@@ -499,50 +507,52 @@ let MapEditorComponent = IgeEntity.extend({
         });
     },
     checkBrushToolSelected: function () {
-        return $(`#brush`).hasClass(`editordiv-hover`) || $(`#open-pallet`).hasClass(`editordiv-hover`) || $(`#eraser`).hasClass(`editordiv-hover`) || $(`#fill`).hasClass(`editordiv-hover`);
+        return $('#brush').hasClass('editordiv-hover') || $('#open-pallet').hasClass('editordiv-hover') || $('#eraser').hasClass('editordiv-hover') || $('#fill').hasClass('editordiv-hover');
     },
     updateSaveButtonForMap: function (isAutoSave) {
         autoSave = isAutoSave;
 
-        let html = ``;
+        var html = '';
         if (ige.game.data.isDeveloper) {
-            if ($(`#map-edit-buttons`).length === 0) {
-                html += `<div id="editor-div" class="z-index11 p-2"><table id="map-edit-buttons">`;
+            if ($('#map-edit-buttons').length === 0) {
+                html += '<div id="editor-div" class="z-index11 p-2"><table id="map-edit-buttons">';
             }
-            html += `<tr><td><i id="select_entity" class="fas fa-mouse-pointer text-muted" title="Select Entity(S)" aria-hidden="true"></i></td><td><i id="add_entities" class="fas fa-cube text-muted" title="Add Entities(A)" aria-hidden="true"></i></td></tr>`;
+            html += '<tr><td><i id="select_entity" class="fas fa-mouse-pointer text-muted" title="Select Entity(S)" aria-hidden="true"></i></td><td><i id="add_entities" class="fas fa-cube text-muted" title="Add Entities(A)" aria-hidden="true"></i></td></tr>';
             if (isAutoSave) {
-                html += `<tr><td><i id="mapsave" class="fa fa-floppy-o text-muted" title="save map" aria-hidden="true"></i></td><td><i id="add_region" class="far fa-object-ungroup text-muted" title="Add Region(R)" aria-hidden="true"></i></td></tr>`;
+                html += '<tr><td><i id="mapsave" class="fa fa-floppy-o text-muted" title="save map" aria-hidden="true"></i></td><td><i id="add_region" class="far fa-object-ungroup text-muted" title="Add Region(R)" aria-hidden="true"></i></td></tr>';
             }
             else {
-                html += `<tr><td><i id="add_region" class="far fa-object-ungroup text-muted" title="Add Region(R)" aria-hidden="true"></i></td><td></td></tr>`;
+                html += '<tr><td><i id="add_region" class="far fa-object-ungroup text-muted" title="Add Region(R)" aria-hidden="true"></i></td><td></td></tr>';
             }
-            html += `<tr><td><i id="brush" class="fa fa-paint-brush text-muted" title="Brush(B)" aria-hidden="true"></i></td><td><i id="fill" class="fas fa-fill-drip text-muted" title="fill(F)"></i></td></tr>` +
-                `<tr><td><i id="eraser" class="fa fa-eraser text-muted" title="Eraser(E)" aria-hidden="true"></i></td><td><i id="clear-layer" class="fas fa-window-close  text-muted" class="text-muted" title="clear selected layer(C)"></i></td></tr>`;
-            if ($(`#map-edit-buttons`).length === 0) {
-                html += `</table></div>`;
-                $(`body`).append(html);
+            html += '<tr><td><i id="brush" class="fa fa-paint-brush text-muted" title="Brush(B)" aria-hidden="true"></i></td><td><i id="fill" class="fas fa-fill-drip text-muted" title="fill(F)"></i></td></tr>' +
+                '<tr><td><i id="eraser" class="fa fa-eraser text-muted" title="Eraser(E)" aria-hidden="true"></i></td><td><i id="clear-layer" class="fas fa-window-close  text-muted" class="text-muted" title="clear selected layer(C)"></i></td></tr>';
+            if ($('#map-edit-buttons').length === 0) {
+                html += '</table></div>';
+                $('body').append(html);
             }
             else {
-                $(`#map-edit-buttons`).html(html);
+                $('#map-edit-buttons').html(html);
             }
             this.addMapEditorlisteners();
             if (this.selectEntities) {
-                this.addSelectedClass($(`#select_entity`));
+                this.addSelectedClass($('#select_entity'));
             }
         }
+
     },
     addMapEditorlisteners: function () {
-        let self = this;
+        var self = this;
 
-        for (let key in self.listeners) {
-            $(`#${key}`).off();
-            $(`#${key}`).on(`click`, self.listeners[key]);
+        for (var key in self.listeners) {
+            $('#' + key).off();
+            $('#' + key).on('click', self.listeners[key]);
         }
+
     },
     customEditor: function () {
-        let self = this;
-        this.positionMiniMap(0.05);
-        let moveCameraInc = 50;
+        var self = this
+        this.positionMiniMap(.05);
+        var moveCameraInc = 50;
         cameraPos = new IgePoint3d();
 
         // need to match where the camera will move after map is loaded
@@ -551,32 +561,37 @@ let MapEditorComponent = IgeEntity.extend({
         cameraPos.x = ige.client.vp1.camera._translate.x;
         cameraPos.y = ige.client.vp1.camera._translate.y;
 
-        $(window).keydown((event) => {
-            // don't process arrow key input if in a modal window and typing stuff in
-            if (($(`input,textarea`).is(`:focus`))) {
+        $(window).keydown(function (event) {
+
+            // don't process arrow key input if in a modal window and typing stuff in 
+            if (($("input,textarea").is(":focus"))) {
                 return true;
             }
 
-            let key = event.which;
-            let allowedKeys = [38, 39, 37, 40];
+            var key = event.which;
+            var allowedKeys = [38, 39, 37, 40];
 
             if (!allowedKeys.includes(key)) return;
 
-            $(`input:radio`).blur();
-            let hitArrow = false;
+            $("input:radio").blur();
+            var hitArrow = false;
 
             if (key == 38) { // up
                 cameraPos.y -= moveCameraInc;
                 hitArrow = true;
+
             }
             if (key == 39) {
                 cameraPos.x += moveCameraInc;
                 hitArrow = true;
+
             }
 
             if (key == 37) {
+
                 cameraPos.x -= moveCameraInc;
                 hitArrow = true;
+
             }
             if (key == 40) {
                 cameraPos.y += moveCameraInc;
@@ -591,35 +606,38 @@ let MapEditorComponent = IgeEntity.extend({
             if (hitArrow) {
                 return false;
             }
+
         });
     },
 
     showHideMapEditorUI: function (show) {
         // toggle show map editor current tile hovered over
         if (show) {
-            $(`#texture_pal_cont`).show();
-            $(`#layer_menu`).show();
+            $('#texture_pal_cont').show();
+            $('#layer_menu').show();
         } else {
-            $(`#texture_pal_cont`).hide();
-            $(`#layer_menu`).hide();
+            $('#texture_pal_cont').hide();
+            $('#layer_menu').hide();
+
         }
     },
 
     scanMapLayers: function () {
-        let defaultLayers = [`floor`, `floor2`, `trees`, `walls`, `debris`];
-        for (let i in ige.layersById) {
+        var defaultLayers = ['floor', 'floor2', 'trees', 'walls', 'debris']
+        for (var i in ige.layersById) {
             if (!defaultLayers.includes(i)) {
-                alert(`invalid layer name ${i} detected`);
+                alert('invalid layer name ' + i + ' detected')
                 return;
             }
         }
     },
     getTilesheetData: function () {
+
         //  gets the texture used for the tile layer. if not named appropriately, gets the last texture in the list
         if (ige.layersById.floor) {
-            for (let i = 0; i < ige.layersById.floor._textureList.length; i++) {
-                let string = ige.layersById.floor._textureList[i]._id;
-                let substring = `tilesheet`;
+            for (var i = 0; i < ige.layersById.floor._textureList.length; i++) {
+                var string = ige.layersById.floor._textureList[i]._id,
+                    substring = "tilesheet";
 
                 if (string.indexOf(substring) !== -1) {
                     ige.layersById.floor._textureList[i].tindex = i;
@@ -633,13 +651,14 @@ let MapEditorComponent = IgeEntity.extend({
     },
 
     positionCameraOnMiniClick: function (relX, relY) {
+
         // translates coordinates from screen to world relative to the position clicked on the mini map
         if (!this.checkIfClickedMiniMap(relX, relY)) {
             return;
         }
-        let miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
-        let worldX = relX / 0.05;
-        let worldY = (relY - miniWinRelY) / 0.05;
+        var miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
+        var worldX = relX / .05;
+        var worldY = (relY - miniWinRelY) / .05;
         ige.client.vp1.camera._translate.x = worldX;
         ige.client.vp1.camera._translate.y = worldY;
 
@@ -647,13 +666,14 @@ let MapEditorComponent = IgeEntity.extend({
         cameraPos.y = ige.client.vp1.camera._translate.y;
 
         this.positionViewPortRect();
+
     },
     positionCameraOnRightClick: function (relX, relY) {
-        let miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
-        let worldX = relX;
-        let worldY = relY;
-        let height = ige.client.vp1.camera._translate.y - this.lastYPosition;
-        let width = ige.client.vp1.camera._translate.x - this.lastXPosition;
+        var miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
+        var worldX = relX;
+        var worldY = relY;
+        var height = ige.client.vp1.camera._translate.y - this.lastYPosition;
+        var width = ige.client.vp1.camera._translate.x - this.lastXPosition;
 
         ige.client.vp1.camera._translate.x = ige.client.vp1.camera._translate.x + width;
         ige.client.vp1.camera._translate.y = -(ige.client.vp1.camera._translate.y + height);
@@ -664,34 +684,40 @@ let MapEditorComponent = IgeEntity.extend({
         this.positionViewPortRect();
     },
     createLayerMenu: function () {
-        // create the HTML for the layer toggle visibility and toggle draw to layer box.
-        if ($(`#layer_menu`).length > 1) {
+
+        // create the HTML for the layer toggle visibility and toggle draw to layer box. 
+        if ($('#layer_menu').length > 1) {
+
             return;
+
         }
 
-        let layerMenuHTML = `<div id="layer_menu" class="z-index11"><div>Layers</div><ul class="list-group">`;
-        let layersByOrder = {
-            trees: ``,
-            debris: ``,
-            walls: ``,
-            floor2: ``,
-            floor: ``
+        var layerMenuHTML = '<div id="layer_menu" class="z-index11"><div>Layers</div><ul class="list-group">';
+        var layersByOrder = {
+            trees: '',
+            debris: '',
+            walls: '',
+            floor2: '',
+            floor: ''
         };
         for (var key in layersByOrder) {
-            if (key === `debris`)
+            if (key === 'debris')
                 continue;
-            var id = `li_${key}`;
-            layerMenuHTML += `<li id="${id}_list" data-layer="${key}" class="not_current list-group-item"><i id="${id}" data-layer="${key}" data-vis="0" class="fa fa-eye" aria-hidden="true"></i>${key}</li>`;
+            var id = 'li_' + key;
+            layerMenuHTML += '<li id="' + id + '_list" data-layer="' + key + '" class="not_current list-group-item"><i id="' + id + '" data-layer="' + key + '" data-vis="0" class="fa fa-eye" aria-hidden="true"></i>' + key + '</li>';
+
+
         }
-        layerMenuHTML += `</ul></div>`;
+        layerMenuHTML += '</ul></div>';
 
-        $(`body`).append(layerMenuHTML);
+        $('body').append(layerMenuHTML);
 
-        $(`#li_floor_list`).addClass(`active`);
+        $('#li_floor_list').addClass('active');
 
-        $(`#all_layers_checkbox`).on(`change`, () => {
+        $('#all_layers_checkbox').on('change', function () {
+
             showAllLayers = (!showAllLayers);
-            for (let key in ige.layersById) {
+            for (var key in ige.layersById) {
                 if (key == curLayerPainting) {
                     var val = 1;
                 } else {
@@ -701,60 +727,70 @@ let MapEditorComponent = IgeEntity.extend({
                     val = 1;
                 }
 
-                if (typeof ige.layersById[key].opacity === `function`) {
+                if (typeof ige.layersById[key].opacity === "function") {
                     ige.layersById[key].opacity(val);
+
                 } else {
+
                     ige.layersById[key].opacity = val;
+
+
                 }
             }
+
+
         });
 
         for (var key in ige.layersById) {
-            var id = `li_${key}`;
+            var id = 'li_' + key;
 
-            $(`#${id}_list`).on(`click`, function () {
-                $(this).siblings().removeClass(`active`);
-                $(this).addClass(`active`);
-                let layer = $(this).data(`layer`);
-                if (layer === `debris`) {
-                    $(`#eraser`).addClass(`hidden`);
-                    $(`#brush`).addClass(`hidden`);
-                    $(`#fill`).addClass(`hidden`);
+            $('#' + id + "_list").on('click', function () {
+                $(this).siblings().removeClass('active');
+                $(this).addClass('active');
+                var layer = $(this).data('layer');
+                if (layer === 'debris') {
+                    $('#eraser').addClass('hidden');
+                    $('#brush').addClass('hidden');
+                    $('#fill').addClass('hidden');
                 }
                 else {
-                    $(`#eraser`).removeClass(`hidden`);
-                    $(`#brush`).removeClass(`hidden`);
-                    $(`#fill`).removeClass(`hidden`);
+                    $('#eraser').removeClass('hidden');
+                    $('#brush').removeClass('hidden');
+                    $('#fill').removeClass('hidden');
                 }
                 curLayerPainting = layer;
+
             });
 
-            $(`#${id}`).on(`click`, function () {
-                let val = $(this).data(`vis`);
+            $('#' + id).on('click', function () {
+
+                var val = $(this).data('vis');
                 if (val == 0) {
-                    $(this).data(`vis`, 1);
-                    $(this).removeClass(`fa-eye`);
-                    $(this).addClass(`fa-eye-slash`);
+                    $(this).data('vis', 1);
+                    $(this).removeClass('fa-eye');
+                    $(this).addClass('fa-eye-slash');
+
                 } else {
-                    $(this).data(`vis`, 0);
-                    $(this).removeClass(`fa-eye-slash`);
-                    $(this).addClass(`fa-eye`);
+                    $(this).data('vis', 0);
+                    $(this).removeClass('fa-eye-slash');
+                    $(this).addClass('fa-eye');
                 }
 
-                let layer = $(this).data(`layer`);
-                if (layer === `debris`) {
-                    let allDebris = ige.$$(`debris`);
-                    allDebris.forEach((debris) => {
+
+                var layer = $(this).data('layer');
+                if (layer === 'debris') {
+                    var allDebris = ige.$$('debris')
+                    allDebris.forEach(function (debris) {
                         if (val) {
                             debris.show();
                         }
                         else {
                             debris.hide();
                         }
-                    });
+                    })
                 }
                 else {
-                    if (typeof ige.layersById[layer].opacity === `function`) {
+                    if (typeof ige.layersById[layer].opacity === "function") {
                         ige.layersById[layer].opacity(val);
                     }
                     else {
@@ -762,25 +798,27 @@ let MapEditorComponent = IgeEntity.extend({
                     }
                 }
             });
+
         }
+
     },
     updateWorldXYCoords: function (screenX, screenY) {
         // translates screen coordinates to world coordinates
-        let vp = ige.client.vp1;
-        let mp = vp.mousePos();
+        var vp = ige.client.vp1;
+        var mp = vp.mousePos();
         ige.mapEditor.mouseCoordinatesWRTVp = {
             x: mp.x,
             y: mp.y
         };
-        $(`#mouse_coords #x`).text(ige.mapEditor.mouseCoordinatesWRTVp.x);
-        $(`#mouse_coords #y`).text(ige.mapEditor.mouseCoordinatesWRTVp.y);
+        $('#mouse_coords #x').text(ige.mapEditor.mouseCoordinatesWRTVp.x);
+        $('#mouse_coords #y').text(ige.mapEditor.mouseCoordinatesWRTVp.y);
     },
     checkIfClickedMiniMap: function (relX, relY) {
         // determines if the user clicks the mini map based on relative position of the mouse
-        let self = this;
-        let miniHeight = ige.client.minimapVp.height();
-        let miniWidth = ige.client.minimapVp.width();
-        let miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
+        var self = this;
+        var miniHeight = ige.client.minimapVp.height();
+        var miniWidth = ige.client.minimapVp.width();
+        var miniWinRelY = (ige.client.minimapVp._translate.y * 2); // position of mini map relative to window y
 
         if ((relX > miniWidth) || (relY > (miniWinRelY + miniHeight)) || (relY < miniWinRelY) || self.drawingRegion) {
             // exclude clicks outside the mini map area
@@ -790,7 +828,7 @@ let MapEditorComponent = IgeEntity.extend({
         }
     },
     makeMap: function (layer) {
-        for (let i = 0; i < ige.map.data.width * ige.map.data.height; i++) {
+        for (var i = 0; i < ige.map.data.width * ige.map.data.height; i++) {
             if (layer[i] === undefined) {
                 layer[i] = 0;
             }
@@ -798,13 +836,13 @@ let MapEditorComponent = IgeEntity.extend({
     },
     floodFil: function (layer, x, y, previousTile, NewTile) {
         // console.log(this.counter++,' ',x,' ',y)
-        let self = this;
+        var self = this;
         if (x < 0 || y < 0 || x >= ige.map.data.width || y >= ige.map.data.height)
             return;
 
-        let tileIndex = (x) + ((y) * ige.map.data.width);
+        var tileIndex = (x) + ((y) * ige.map.data.width);
         if (layer[tileIndex] === undefined) {
-            this.makeMap(layer);
+            this.makeMap(layer)
         }
         if (layer[tileIndex] != previousTile || NewTile == previousTile)
             return;
@@ -835,55 +873,57 @@ let MapEditorComponent = IgeEntity.extend({
     },
 
     mouseDownEditor: function (e) {
-        // input handler for placing a tile
+        // input handler for placing a tile 
         // console.log('mouse down called');
         if (e.which !== 1) return;
         if (this.checkIfClickedMiniMap(e.pageX, e.pageY)) {
-            $(`#world_cur_tile`).hide();
+
+            $('#world_cur_tile').hide();
             return;
         }
 
-        if (ige._selectedViewport && ige._selectedViewport.id() !== `vp1`) return;
+        if (ige._selectedViewport && ige._selectedViewport.id() !== 'vp1') return;
 
         // $('#world_cur_tile').show();
 
-        let winWidth = $(window).width();
-        let winHeight = $(window).height();
-        let cellWidth = this.getTilesheetData()._cellWidth;
-        let cellHeight = this.getTilesheetData()._cellHeight;
+        var winWidth = $(window).width();
+        var winHeight = $(window).height();
+        var cellWidth = this.getTilesheetData()._cellWidth;
+        var cellHeight = this.getTilesheetData()._cellHeight;
 
-        let camX = ige.client.vp1.camera._translate.x;
-        let camY = ige.client.vp1.camera._translate.y;
+        var camX = ige.client.vp1.camera._translate.x;
+        var camY = ige.client.vp1.camera._translate.y;
 
-        let worldX = ige.mapEditor.mouseCoordinatesWRTVp.x;
-        let worldY = ige.mapEditor.mouseCoordinatesWRTVp.y;
+        var worldX = ige.mapEditor.mouseCoordinatesWRTVp.x;
+        var worldY = ige.mapEditor.mouseCoordinatesWRTVp.y;
 
-        let tileX = Math.floor(worldX / cellWidth);
-        let tileY = Math.floor(worldY / cellHeight);
-        console.log(tileX, tileY, cellWidth, cellHeight, worldX, worldY);
+        var tileX = Math.floor(worldX / cellWidth);
+        var tileY = Math.floor(worldY / cellHeight);
+        console.log(tileX, tileY, cellWidth, cellHeight, worldX, worldY)
         if (tileX < 0 || tileY < 0 || tileX >= ige.map.data.width || tileY >= ige.map.data.height) {
             return;
         }
         if (curSelectedTileIndex != undefined) {
+
             if (ige.layersById[curLayerPainting].paintTile == undefined) {
                 return;
             }
-            let lIndex = this.getLayerIndexFromName(curLayerPainting);
+            var lIndex = this.getLayerIndexFromName(curLayerPainting);
             ige.isMapUpdated = true;
-            let tileIndex = (tileX) + ((tileY) * ige.map.data.width);
-            let forceRendering = false;
-            if ($(`#fill`).hasClass(`editordiv-hover`)) {
-                let currentTile = ige.map.data.layers[lIndex].data[tileIndex];
+            var tileIndex = (tileX) + ((tileY) * ige.map.data.width);
+            var forceRendering = false;
+            if ($('#fill').hasClass('editordiv-hover')) {
+                var currentTile = ige.map.data.layers[lIndex].data[tileIndex];
                 this.counter = 0;
                 this.floodFil(ige.map.data.layers[lIndex].data, tileX, tileY, currentTile || 0, curSelectedTileIndex);
                 forceRendering = true;
             }
             else {
-                if ($(`#eraser`).hasClass(`editordiv-hover`)) {
+                if ($('#eraser').hasClass('editordiv-hover')) {
                     ige.layersById[curLayerPainting].clearTile(tileX, tileY);
                     forceRendering = true;
                 }
-                else if ($(`#brush`).hasClass(`editordiv-hover`)) {
+                else if ($('#brush').hasClass('editordiv-hover')) {
                     ige.layersById[curLayerPainting].paintTile(tileX, tileY, this.getTilesheetData().tindex, curSelectedTileIndex);
                     forceRendering = true;
                 }
@@ -898,107 +938,114 @@ let MapEditorComponent = IgeEntity.extend({
             else {
                 window.updateSandboxMapLayers(lIndex, ige.map.data.layers[lIndex].data);
             }
+
+
         }
     },
     drawNewRegion: function (e) {
-        let vpWidth = ige.client.vp1.width();
-        let vpHeight = ige.client.vp1.height();
+        var vpWidth = ige.client.vp1.width();
+        var vpHeight = ige.client.vp1.height();
         if (mouseIsDown) {
-            let mx = ige.mapEditor.mouseCoordinatesWRTVp.x;
-            let my = ige.mapEditor.mouseCoordinatesWRTVp.y;
+            var mx = ige.mapEditor.mouseCoordinatesWRTVp.x;
+            var my = ige.mapEditor.mouseCoordinatesWRTVp.y;
             if (!addRegionCordinates.startX && !addRegionCordinates.startY) {
                 addRegionCordinates.startX = mx;
                 addRegionCordinates.startY = my;
                 addRegionCordinates.mouseStartX = e.pageX;
                 addRegionCordinates.mouseStartY = e.pageY;
-                $(`#draw-new-region`).css({
-                    position: `absolute`,
+                $('#draw-new-region').css({
+                    position: 'absolute',
                     left: e.pageX,
                     top: e.pageY,
-                    border: `1px solid blue`
+                    border: '1px solid blue'
                 });
             } else {
                 addRegionCordinates.endX = mx;
                 addRegionCordinates.endY = my;
                 addRegionCordinates.mouseEndX = e.pageX;
                 addRegionCordinates.mouseEndY = e.pageY;
-                $(`#draw-new-region`).css({
-                    position: `absolute`,
-                    left: (e.pageX - addRegionCordinates.mouseStartX < 0) ? `${e.pageX}px` : `${addRegionCordinates.mouseStartX}px`,
-                    top: (e.pageY - addRegionCordinates.mouseStartY < 0) ? `${e.pageY}px` : `${addRegionCordinates.mouseStartY}px`,
-                    height: `${Math.abs(e.pageY - addRegionCordinates.mouseStartY)}px`,
-                    width: `${Math.abs(e.pageX - addRegionCordinates.mouseStartX)}px`,
-                    border: `1px solid blue`
+                $('#draw-new-region').css({
+                    position: 'absolute',
+                    left: (e.pageX - addRegionCordinates.mouseStartX < 0) ? e.pageX + 'px' : addRegionCordinates.mouseStartX + 'px',
+                    top: (e.pageY - addRegionCordinates.mouseStartY < 0) ? e.pageY + 'px' : addRegionCordinates.mouseStartY + 'px',
+                    height: Math.abs(e.pageY - addRegionCordinates.mouseStartY) + 'px',
+                    width: Math.abs(e.pageX - addRegionCordinates.mouseStartX) + 'px',
+                    border: '1px solid blue'
                 });
             }
         }
+
     },
     saveNewRegion: function (event) {
         if (addNewRegion && addRegionCordinates.startX) {
-            let regionKey = `Region${parseInt(Math.random() * 10000)}`;
-            let x = addRegionCordinates.endX - addRegionCordinates.startX < 0 ? addRegionCordinates.endX : addRegionCordinates.startX;
-            let y = addRegionCordinates.endY - addRegionCordinates.startY < 0 ? addRegionCordinates.endY : addRegionCordinates.startY;
-            let height = Math.abs(addRegionCordinates.endY - addRegionCordinates.startY);
-            let width = Math.abs(addRegionCordinates.endX - addRegionCordinates.startX);
+            var regionKey = 'Region' + parseInt(Math.random() * 10000);
+            var x = addRegionCordinates.endX - addRegionCordinates.startX < 0 ? addRegionCordinates.endX : addRegionCordinates.startX,
+                y = addRegionCordinates.endY - addRegionCordinates.startY < 0 ? addRegionCordinates.endY : addRegionCordinates.startY,
+                height = Math.abs(addRegionCordinates.endY - addRegionCordinates.startY),
+                width = Math.abs(addRegionCordinates.endX - addRegionCordinates.startX);
 
-            let newRegion = {
-                dataType: `region`,
+            var newRegion = {
+                dataType: 'region',
                 default: {
                     x: x + (Math.abs(width) / 2),
                     y: y + (Math.abs(height) / 2),
                     height: height,
-                    width: width
+                    width: width,
                 }
             };
             ige.regionManager.openRegionModal(newRegion, regionKey, true);
             addRegionCordinates = {};
-            $(`#draw-new-region`).css({
-                border: ``,
-                height: ``,
-                left: ``,
-                top: ``,
-                width: ``
+            $('#draw-new-region').css({
+                border: '',
+                height: '',
+                left: '',
+                top: '',
+                width: ''
             });
 
             addNewRegion = false;
             // this.removeSelectedClass('add_region');
-            $(`#add_region`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+            $('#add_region').removeClass('editordiv-hover').addClass('text-muted');
         }
     },
     snapToGrid: function (val, gridSize) {
-        let snap = gridSize * Math.floor(val / gridSize);
+        var snap = gridSize * Math.floor(val / gridSize);
 
         return snap;
+
     },
 
     positionViewPortRect: function () {
+
         // adds the viewport rect
-        if ($(`#view_rect`).length < 1) {
-            $(`body`).append(`<div id="view_rect"></div>`);
+        if ($('#view_rect').length < 1) {
+            $('body').append('<div id="view_rect"></div>');
         }
 
-        let vpWidth = ige.client.vp1.width() * 0.05;
-        let vpHeight = ige.client.vp1.height() * 0.05;
-        $(`#view_rect`).width(vpWidth);
-        $(`#view_rect`).height(vpHeight);
+        var vpWidth = ige.client.vp1.width() * .05;
+        var vpHeight = ige.client.vp1.height() * .05;
+        $('#view_rect').width(vpWidth);
+        $('#view_rect').height(vpHeight);
 
-        let relY = ((ige.client.minimapVp._translate.y * 2) + (ige.client.vp1.camera._translate.y * 0.05)) - (vpHeight / 2);
-        let relX = (ige.client.vp1.camera._translate.x * 0.05) - (vpWidth / 2);
+        var relY = ((ige.client.minimapVp._translate.y * 2) + (ige.client.vp1.camera._translate.y * .05)) - (vpHeight / 2);
+        var relX = (ige.client.vp1.camera._translate.x * .05) - (vpWidth / 2);
 
-        $(`#view_rect`).css({
-            top: relY,
-            left: relX,
+
+        $('#view_rect').css({
+            'top': relY,
+            'left': relX,
             zIndex: 0
         });
     },
 
     positionMiniMap: function (miniMapScale) {
+
         // positions mini map so it is flush to the bottom left of the screen
-        let worldWidth = ige.map.data.width * ige.map.data.tileheight;
-        let worldHeight = ige.map.data.height * ige.map.data.tileheight;
-        let padding = 0;
-        ige.client.minimapVp.width((worldWidth * 0.05) + padding);
-        ige.client.minimapVp.height((worldHeight * 0.05) + padding);
+        var worldWidth = ige.map.data.width * ige.map.data.tileheight;
+        var worldHeight = ige.map.data.height * ige.map.data.tileheight;
+        var padding = 0;
+        ige.client.minimapVp.width((worldWidth * .05) + padding);
+        ige.client.minimapVp.height((worldHeight * .05) + padding);
 
         ige.client.minimapVp.camera._translate.x = worldWidth / 2;
         ige.client.minimapVp.camera._translate.y = worldHeight / 2;
@@ -1008,10 +1055,14 @@ let MapEditorComponent = IgeEntity.extend({
     },
 
     getLayerIndexFromName: function (name) {
-        let i = 0;
-        for (let key in ige.layersById) {
+
+        var i = 0;
+        for (var key in ige.layersById) {
+
             if (key == name) {
+
                 return i;
+
             }
             i++;
         }
@@ -1021,27 +1072,30 @@ let MapEditorComponent = IgeEntity.extend({
         if (ige.layersById == undefined || ige.layersById.floor == undefined) {
             return;
         }
-        let imgWidth = $(`#texture_pal`).width();
-        let imgHeight = $(`#texture_pal`).height();
-        let winWidth = $(window).width();
-        let winHeight = $(window).height();
-        let cellWidth = this.getTilesheetData()._cellWidth;
-        let cellHeight = this.getTilesheetData()._cellHeight;
+        var imgWidth = $('#texture_pal').width();
+        var imgHeight = $('#texture_pal').height();
+        var winWidth = $(window).width();
+        var winHeight = $(window).height();
+        var cellWidth = this.getTilesheetData()._cellWidth;
+        var cellHeight = this.getTilesheetData()._cellHeight;
 
         // var isHover = e.target.id === 'texture_pal';
-        let isHover = ((e.pageX > (winWidth - imgWidth)) && (e.pageY > (winHeight - imgHeight)));
-        let isAnimating = ($(`#texture_pal_cont`).is(`:animated`));
+        var isHover = ((e.pageX > (winWidth - imgWidth)) && (e.pageY > (winHeight - imgHeight)));
+        var isAnimating = ($('#texture_pal_cont').is(':animated'))
+
 
         if (!isHover) {
-            $(`#cur_texture_box`).css({
-                display: `none`
+            $('#cur_texture_box').css({
+                'display': 'none',
 
             });
         } else {
-            $(`#cur_texture_box`).css({
-                display: `block`
+
+            $('#cur_texture_box').css({
+                'display': 'block',
 
             });
+
         }
 
         if (isHover) {
@@ -1064,6 +1118,8 @@ let MapEditorComponent = IgeEntity.extend({
             // var camX = ige.client.vp1.camera._translate.x;
             // var camY = ige.client.vp1.camera._translate.y;
 
+
+
             // var worldX = ige.mapEditor.mouseCoordinatesWRTVp.x;
             // var worldY = ige.mapEditor.mouseCoordinatesWRTVp.y;
             // var tileX = Math.floor(worldX / cellWidth);
@@ -1074,6 +1130,7 @@ let MapEditorComponent = IgeEntity.extend({
             // // console.log(cellWidth, cellHeight)
             // tileX = tileX * cellWidth;
             // tileY = tileY * cellHeight;
+
 
             // $('#world_cur_tile').css({
             //     'left': tileX,
@@ -1087,20 +1144,21 @@ let MapEditorComponent = IgeEntity.extend({
                 this.mouseDownEditor(e);
             }
 
+
             return;
         }
-        let boxWidth = imgWidth / this.getTilesheetData()._cellColumns;
-        let boxHeight = imgHeight / this.getTilesheetData()._cellRows;
+        var boxWidth = imgWidth / this.getTilesheetData()._cellColumns;
+        var boxHeight = imgHeight / this.getTilesheetData()._cellRows;
 
-        $(`#cur_texture_box`).width(boxWidth);
-        $(`#cur_texture_box`).height(boxHeight);
+        $('#cur_texture_box').width(boxWidth);
+        $('#cur_texture_box').height(boxHeight);
 
-        let parentOffset = $(`#texture_pal_cont`).offset();
-        let relX = this.snapToGrid((e.pageX - parentOffset.left) - boxWidth / 2, boxWidth);
-        let relY = this.snapToGrid((e.pageY - parentOffset.top) - boxHeight / 2, boxHeight);
-        $(`#cur_texture_box`).css({
-            left: relX, // + $('#texture_pal_cont')[0].scrollLeft
-            top: relY // + $('#texture_pal_cont')[0].scrollTop
+        var parentOffset = $('#texture_pal_cont').offset();
+        var relX = this.snapToGrid((e.pageX - parentOffset.left) - boxWidth / 2, boxWidth);
+        var relY = this.snapToGrid((e.pageY - parentOffset.top) - boxHeight / 2, boxHeight);
+        $('#cur_texture_box').css({
+            'left': relX, // + $('#texture_pal_cont')[0].scrollLeft
+            'top': relY // + $('#texture_pal_cont')[0].scrollTop
         });
 
         // curSelectedTileIndex = Math.round(((relX / boxWidth) + 1) + (((relY / boxHeight))) * this.getTilesheetData()._cellColumns);
@@ -1112,47 +1170,52 @@ let MapEditorComponent = IgeEntity.extend({
         element.animate({
             opacity: num
         }, 3000, undefined, function () {
-            if (num == 0.4) {
-                num = 0.8;
+            if (num == .4) {
+                num = .8;
             } else {
-                num = 0.4;
+                num = .4;
             }
             this.animateOpacity(element, num);
+
+
         });
     },
     addSelectedClass: function (self, value) {
-        if ($(self).hasClass(`editordiv-hover`) && !value) {
-            $(self).removeClass(`editordiv-hover`);
-            $(self).addClass(`text-muted`);
+
+        if ($(self).hasClass('editordiv-hover') && !value) {
+            $(self).removeClass('editordiv-hover');
+            $(self).addClass('text-muted');
         } else {
-            $(`.fa.editordiv-hover`).removeClass(`editordiv-hover`).addClass(`text-muted`);
-            $(`.material-icons.editordiv-hover`).removeClass(`editordiv-hover`).addClass(`text-muted`);
-            $(self).removeClass(`text-muted`);
-            $(self).addClass(`editordiv-hover`);
+            $('.fa.editordiv-hover').removeClass('editordiv-hover').addClass('text-muted');
+            $('.material-icons.editordiv-hover').removeClass('editordiv-hover').addClass('text-muted');
+            $(self).removeClass('text-muted');
+            $(self).addClass('editordiv-hover');
         }
     },
     addUI: function () {
-        let self = this;
 
-        let textureURL = this.getTilesheetData()._url;
+        var self = this
+
+        var textureURL = this.getTilesheetData()._url;
         if (ige.game.data.isDeveloper) {
             this.updateSaveButtonForMap(autoSave);
         }
-        $(`body`).append(`<div id="draw-new-region" class="z-index11"></div>`);
-        $(`body`).append(`<div id="mouse_coords">X:<span id="x"></span> Y:<span id="y"></span></div>`);
+        $('body').append('<div id="draw-new-region" class="z-index11"></div>');
+        $('body').append('<div id="mouse_coords">X:<span id="x"></span> Y:<span id="y"></span></div>');
         // $('body').append('<div id="world_cur_tile" class="z-index11"></div><div id="texture_pal_cont" class="z-index11"><img id="texture_pal" src="' + textureURL + '" /><div id="cur_texture_box"></div></div>');
 
         //     animateOpacity($('#world_cur_tile'), .4);
-        $(`#texture_pal_cont`).on(`click`, (e) => {
-            let imgWidth = $(`#texture_pal`).width();
-            let imgHeight = $(`#texture_pal`).height();
+        $('#texture_pal_cont').on('click', function (e) {
+            var imgWidth = $('#texture_pal').width();
+            var imgHeight = $('#texture_pal').height();
 
-            let boxWidth = imgWidth / self.getTilesheetData()._cellColumns;
-            let boxHeight = imgHeight / self.getTilesheetData()._cellRows;
+            var boxWidth = imgWidth / self.getTilesheetData()._cellColumns;
+            var boxHeight = imgHeight / self.getTilesheetData()._cellRows;
 
-            let parentOffset = $(`#texture_pal_cont`).offset();
-            let relX = self.snapToGrid((e.pageX - parentOffset.left) - boxWidth / 2, boxWidth);
-            let relY = self.snapToGrid((e.pageY - parentOffset.top) - boxHeight / 2, boxHeight);
+
+            var parentOffset = $('#texture_pal_cont').offset();
+            var relX = self.snapToGrid((e.pageX - parentOffset.left) - boxWidth / 2, boxWidth);
+            var relY = self.snapToGrid((e.pageY - parentOffset.top) - boxHeight / 2, boxHeight);
 
             curSelectedTileIndex = Math.round(((relX / boxWidth) + 1) + (((relY / boxHeight))) * self.getTilesheetData()._cellColumns);
             lastCurSelectedTileIndex = curSelectedTileIndex;
@@ -1161,140 +1224,140 @@ let MapEditorComponent = IgeEntity.extend({
         this.showHideMapEditorUI(true);
     },
     removeSelectedClass: function (type) {
-        if (type != `brush`) {
-            $(`#brush`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+        if (type != 'brush') {
+            $('#brush').removeClass('editordiv-hover').addClass('text-muted');
         }
-        if (type != `fill`) {
-            $(`#fill`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+        if (type != 'fill') {
+            $('#fill').removeClass('editordiv-hover').addClass('text-muted');
         }
-        if (type != `eraser`) {
-            $(`#eraser`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+        if (type != 'eraser') {
+            $('#eraser').removeClass('editordiv-hover').addClass('text-muted');
         }
-        if (type != `add_region`) {
+        if (type != 'add_region') {
             addNewRegion = false;
-            $(`#add_region`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+            $('#add_region').removeClass('editordiv-hover').addClass('text-muted');
         }
         // if (type != 'open-pallet') {
         //     $('#open-pallet').removeClass('editordiv-hover').addClass('text-muted');
         // }
-        if (type != `add_entities`) {
-            $(`#add_entities`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+        if (type != 'add_entities') {
+            $('#add_entities').removeClass('editordiv-hover').addClass('text-muted');
         }
-        if (type != `select_entity`) {
-            $(`#select_entity`).removeClass(`editordiv-hover`).addClass(`text-muted`);
+        if (type != 'select_entity') {
+            $('#select_entity').removeClass('editordiv-hover').addClass('text-muted');
         }
     },
     openEntitiesModal: function (entity, isEdit) {
-        let self = this;
-        let generateList = function (type) {
-            let html = ``;// '<option value="">Select entity</option>';
-            let entityKeys = Object.keys(entity);
+        var self = this;
+        var generateList = function (type) {
+            var html = "";//'<option value="">Select entity</option>';
+            var entityKeys = Object.keys(entity);
 
-            _.map(ige.game.data[type], (entity, key) => {
-                html += `<option value='${key}'>${entity.name}</option>`;
+            _.map(ige.game.data[type], function (entity, key) {
+                html += "<option value='" + key + "'>" + entity.name + "</option>";
             });
 
             if (entityKeys.length === 0) {
-                html = `<option value="">This game has no entity</option>`;
-                document.getElementById(`entities-list`).value = ``;
+                html = '<option value="">This game has no entity</option>';
+                document.getElementById('entities-list').value = "";
             }
             else {
                 if (!isEdit) {
-                    document.getElementById(`entities-list`).value = entityKeys[0];
+                    document.getElementById('entities-list').value = entityKeys[0];
                     self.entity.entity = entityKeys[0];
                 }
             }
 
-            $(`#entities-list`).html(html);
-        };
-        let generatePlayerTypeList = function (type) {
-            if (type === `unitTypes`) {
-                $(`#player-list-div`).removeClass(`d-none`);
-                document.getElementById(`player-list`).required = true;
+            $('#entities-list').html(html);
+        }
+        var generatePlayerTypeList = function (type) {
+            if (type === 'unitTypes') {
+                $('#player-list-div').removeClass('d-none');
+                document.getElementById('player-list').required = true;
             }
             else {
-                $(`#player-list-div`).hasClass(`d-none`) ? null : $(`#player-list-div`).addClass(`d-none`);
-                document.getElementById(`player-list`).required = false;
+                $('#player-list-div').hasClass('d-none') ? null : $('#player-list-div').addClass('d-none');
+                document.getElementById('player-list').required = false;
                 return;
             }
-            let html = ``;// '<option value=""> Select Player </option>';
-            let availablePlayers = [];
-            _.map(ige.game.data.variables, (variable, key) => {
-                if (variable && variable.dataType === `player`) {
-                    html += `<option value="${key}">${key}</option>`;
+            var html = "";//'<option value=""> Select Player </option>';
+            var availablePlayers = [];
+            _.map(ige.game.data.variables, function (variable, key) {
+                if (variable && variable.dataType === 'player') {
+                    html += '<option value="' + key + '">' + key + '</option>';
                     availablePlayers.push(key);
                 }
             });
             if (availablePlayers.length === 0) {
-                html = `<option value="">This game has no player global variable in Environment</option>`;
-                document.getElementById(`player-list`).value = ``;
+                html = '<option value="">This game has no player global variable in Environment</option>';
+                document.getElementById('player-list').value = "";
             }
             else {
                 if (!isEdit) {
-                    document.getElementById(`player-list`).value = availablePlayers[0];
+                    document.getElementById('player-list').value = availablePlayers[0];
                 }
             }
 
-            $(`#player-list`).html(html);
-        };
-        $(`#entity-type`).on(`change`, function () {
+            $('#player-list').html(html);
+        }
+        $('#entity-type').on("change", function () {
             generateList(this.value);
             generatePlayerTypeList(this.value);
         });
         generateList(entity.type);
         generatePlayerTypeList(entity.type);
-        $(`#entity-type`).val(entity.type);
-        $(`[name=entity-x`).val(entity.x);
-        $(`[name=entity-y`).val(entity.y);
-        $(`[name=entity-rotation`).val(entity.rotation);
-        $(`[name=entity-height`).val(entity.height);
-        $(`[name=entity-width`).val(entity.width);
+        $('#entity-type').val(entity.type);
+        $('[name=entity-x').val(entity.x);
+        $('[name=entity-y').val(entity.y);
+        $('[name=entity-rotation').val(entity.rotation);
+        $('[name=entity-height').val(entity.height);
+        $('[name=entity-width').val(entity.width);
 
         if (isEdit) {
-            $(`[name=entity-player`).val(entity.player);
-            $(`[name=entity`).val(entity.entity);
+            $('[name=entity-player').val(entity.player);
+            $('[name=entity').val(entity.entity);
 
-            $(`[name=entity-index`).val(entity.index);
-            $(`[name=entity-isEdit`).val(`true`);
-            $(`.entity-hidden`).removeClass(`d-none`);
-            $(`#entity-modal-title`).html(`Edit entity`);
-            $(`#entity-save`).html(`<i class='fa fa-save'></i> Save`);
+            $('[name=entity-index').val(entity.index);
+            $('[name=entity-isEdit').val('true');
+            $('.entity-hidden').removeClass('d-none');
+            $('#entity-modal-title').html("Edit entity");
+            $("#entity-save").html("<i class='fa fa-save'></i> Save");
         }
         else {
-            $(`[name=entity-index`).val(`none`);
-            $(`[name=entity-isEdit`).val(`false`);
-            $(`.entity-hidden`).addClass(`d-none`);
-            $(`#entity-modal-title`).html(`Select entity to place on the map`);
-            $(`#entity-save`).html(`Select`);
+            $('[name=entity-index').val('none');
+            $('[name=entity-isEdit').val('false');
+            $('.entity-hidden').addClass('d-none');
+            $('#entity-modal-title').html("Select entity to place on the map");
+            $("#entity-save").html("Select");
         }
 
-        $(`#entities-modal`).modal({
+        $('#entities-modal').modal({
             show: true,
             keyboard: true
         });
     },
-    upsertMapEntities: function (entity, index = (ige.game.data.scripts.initialize && ige.game.data.scripts.initialize.actions.length || 0), action = `upsert`) {
-        if ((!entity.type || !entity.entity) && action != `delete`) {
+    upsertMapEntities: function (entity, index = (ige.game.data.scripts.initialize && ige.game.data.scripts.initialize.actions.length || 0), action = "upsert") {
+        if ((!entity.type || !entity.entity) && action != 'delete') {
             return;
         }
-        let self = this;
-        document.body.style.cursor = `wait`;
+        var self = this;
+        document.body.style.cursor = 'wait'
         window.modifyMapEntity(index, entity.type, entity.entity, entity.x, entity.y, entity.height, entity.width, entity.rotation, entity.player, action)
             .then((game) => {
                 ige.game.data.scripts = game.data.scripts;
                 if (ige.game.createdEntities.length > 0) {
-                    for (let i = 0; i < ige.game.createdEntities.length; i++) {
+                    for (var i = 0; i < ige.game.createdEntities.length; i++) {
                         ige.game.createdEntities[i].destroy();
                     }
                     ige.game.createdEntities = [];
                 }
-                ige.script.runScript(`initialize`, {});
-                document.body.style.cursor = `default`;
-                $(`#entities-modal`).modal(`hide`);
-            });
-    }
+                ige.script.runScript('initialize', {});
+                document.body.style.cursor = 'default';
+                $('#entities-modal').modal("hide");
+            })
+    },
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) {
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
     module.exports = MapEditorComponent;
 }

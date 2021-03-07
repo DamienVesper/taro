@@ -1,31 +1,31 @@
-let IgePixiFloatingText = IgeEntity.extend({
-    classId: `IgePixiFloatingText`,
-    componentId: `pixiFloatingText`,
+var IgePixiFloatingText = IgeEntity.extend({
+    classId: 'IgePixiFloatingText',
+    componentId: 'pixiFloatingText',
 
     init: function (text, config) {
         if (!config) config = {};
 
-        let depthForMyEntities = 3;
-        let depthForOtherPlayerEntities = 2;
+        var depthForMyEntities = 3;
+        var depthForOtherPlayerEntities = 2;
 
-        let defaultFontSize = 12;
-        let defaultBoldValue = false;
-        let defaultMinLimit = 300;
-        let defaultColor = `#fff`;
+        var defaultFontSize = 12;
+        var defaultBoldValue = false;
+        var defaultMinLimit = 300;
+        var defaultColor = '#fff';
 
         config.shouldBeBold = config && config.shouldBeBold || defaultBoldValue;
         config.fontSize = config && config.fontSize || defaultFontSize;
         config.minLimit = config && config.minLimit || defaultMinLimit;
         config.color = config && config.color || defaultColor;
 
-        let textStyleConfig = {
-            fontFamily: `Verdana`,
+        var textStyleConfig = {
+            fontFamily: "Verdana",
             fontSize: 16,
-            fontWeight: `bold` || config.shouldBeBold,
-            fill: config.color
-        };
+            fontWeight: 'bold' || config.shouldBeBold,
+            fill: config.color,
+        }
         if (ige.game.data.settings.addStrokeToNameAndAttributes === undefined || ige.game.data.settings.addStrokeToNameAndAttributes) {
-            textStyleConfig.stroke = `black`;
+            textStyleConfig.stroke = 'black';
             textStyleConfig.strokeThickness = 4;
         }
 
@@ -33,30 +33,31 @@ let IgePixiFloatingText = IgeEntity.extend({
         // set stats because getOwner uses it
         this._stats = config;
 
-        let parentUnit = this.getOwner();
-        let selectedUnit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
-        let addLayer = (selectedUnit && parentUnit && selectedUnit.id() == parentUnit.id()) ? 2 : 1;
+        var parentUnit = this.getOwner();
+        var selectedUnit = ige.client.myPlayer && ige.client.myPlayer.getSelectedUnit();
+        var addLayer = (selectedUnit && parentUnit && selectedUnit.id() == parentUnit.id()) ? 2 : 1;
 
-        let body = parentUnit && parentUnit._stats.currentBody;
-        let defaultLayer = 4;
-        let defaultDepth = 0;
-        let bodyZIndex = body && body[`z-index`];
-        let depth = (bodyZIndex ? bodyZIndex.depth : defaultDepth) + addLayer;
-        let layer = bodyZIndex ? bodyZIndex.layer : defaultLayer;
+        var body = parentUnit && parentUnit._stats.currentBody;
+        var defaultLayer = 4;
+        var defaultDepth = 0;
+        var bodyZIndex = body && body['z-index'];
+        var depth = (bodyZIndex ? bodyZIndex.depth : defaultDepth) + addLayer;
+        var layer = bodyZIndex ? bodyZIndex.layer : defaultLayer;
 
         this._id = this.id();
 
-        text = typeof text === `string` && text.toString() || ``;
+        text = typeof text === 'string' && text.toString() || '';
 
-        let name = new PIXI.Text(text, style);
+        var name = new PIXI.Text(text, style);
         name.zIndex = layer;
         name.depth = depth;
         name.anchor.set(0.5);
 
+
         ige.pixi.trackEntityById[this._id] = name;
         this._pixiText = name;
-        this._pixiText._category = `floating_text`;
-        this.category(`floatingLabel`);
+        this._pixiText._category = 'floating_text';
+        this.category('floatingLabel');
 
         if (config.isFadeUp) {
             name.x = 0;
@@ -76,9 +77,9 @@ let IgePixiFloatingText = IgeEntity.extend({
     },
 
     getOwner: function () {
-        return this._stats.parentUnit
-            ? ige.$(this._stats.parentUnit)
-            : undefined;
+        return this._stats.parentUnit ?
+            ige.$(this._stats.parentUnit) :
+            undefined;
     },
 
     colorOverlay: function (color) {
@@ -87,21 +88,21 @@ let IgePixiFloatingText = IgeEntity.extend({
     },
 
     fadeUp: function () {
-        let self = this;
-        let duration = 2000;
-        let step = duration / 60;
-        let opacityStep = 1 / (step * 5);
-        let displacementPerStep = -20 / step;
+        var self = this;
+        var duration = 2000;
+        var step = duration / 60;
+        var opacityStep = 1 / (step * 5);
+        var displacementPerStep = - 20 / step;
 
-        this.interval = setInterval(() => {
+        this.interval = setInterval(function () {
             if (self._pixiText) {
                 self._pixiText.y += displacementPerStep;
                 self._pixiText.alpha -= opacityStep;
             }
         }, 1000 / 60);
 
-        setTimeout(() => {
-            clearInterval(self.interval);
+        setTimeout(function () {
+            clearInterval(self.interval)
             delete ige.pixi.trackEntityById[self.id];
             if (self._pixiText) {
                 self._pixiText.destroy();
@@ -117,12 +118,12 @@ let IgePixiFloatingText = IgeEntity.extend({
             1 / ige.pixi.viewport.scale.x,
             1 / ige.pixi.viewport.scale.y,
             1 / ige.pixi.viewport.scale.z
-        );
+        )
     },
 
     updatePosition: function () {
-        if (this.getOwner()) {
-            this._pixiText.y = -3 - (this.getOwner().height() / 2) - (17 / ige.pixi.viewport.scale.y);
+        if(this.getOwner()) {
+            this._pixiText.y = - 3 - (this.getOwner().height() / 2) - (17 / ige.pixi.viewport.scale.y)
         } else {
             this._pixiText.y -= 3;
         }
@@ -141,20 +142,20 @@ let IgePixiFloatingText = IgeEntity.extend({
         return this;
     },
     destroy: function () {
-        let self = this;
-        let parentUnit = self.getOwner();
+        var self = this;
+        var parentUnit = self.getOwner();
 
         if (parentUnit && parentUnit.gluedEntities) {
-            let index = -1;
+            var index = -1;
 
-            parentUnit.gluedEntities.forEach((gluedEntity, arrayIndex) => {
+            parentUnit.gluedEntities.forEach(function (gluedEntity, arrayIndex) {
                 if (gluedEntity.id === self.id()) {
-                    index = arrayIndex;
+                    index = arrayIndex
                 }
             });
 
             if (index > -1) {
-                let glueEntity = parentUnit.gluedEntities[index];
+                var glueEntity = parentUnit.gluedEntities[index];
                 ige.pixi.trackEntityById[glueEntity.id] && ige.pixi.trackEntityById[glueEntity.id].destroy(true);
                 parentUnit.gluedEntities.splice(index, 1);
             }
@@ -164,4 +165,4 @@ let IgePixiFloatingText = IgeEntity.extend({
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = IgePixiFloatingText; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiFloatingText; }

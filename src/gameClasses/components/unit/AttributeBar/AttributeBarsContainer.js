@@ -1,12 +1,12 @@
-let AttributeBarsContainer = IgeEntity.extend({
-    classId: `AttributeBarsContainer`,
+var AttributeBarsContainer = IgeEntity.extend({
+    classId: 'AttributeBarsContainer',
 
     init: function (parentEntity, visibleAttributes) {
-        let self = this;
+        var self = this;
 
         IgeEntity.prototype.init.call(self);
 
-        self.category(`attributeBarContainer`);
+        self.category('attributeBarContainer')
         self.id();
         self._entity = parentEntity;
         self.visibleAttributes = visibleAttributes;
@@ -19,24 +19,24 @@ let AttributeBarsContainer = IgeEntity.extend({
         self.width = self.CONTAINER_WIDTH;
 
         // if container belongs to then give it more depth
-        let body = parentEntity._stats.currentBody;
-        let defaultLayer = 4;
-        let defaultDepth = 0;
-        let addLayer = (ige.client.selectedUnit && parentEntity && ige.client.selectedUnit.id() == parentEntity.id()) ? 2 : 1;
-        let bodyZIndex = body && body[`z-index`];
-        let depth = (bodyZIndex ? bodyZIndex.depth : defaultDepth) + addLayer;
-        let layer = bodyZIndex ? bodyZIndex.layer : defaultLayer;
+        var body = parentEntity._stats.currentBody;
+        var defaultLayer = 4;
+        var defaultDepth = 0;
+        var addLayer = (ige.client.selectedUnit && parentEntity && ige.client.selectedUnit.id() == parentEntity.id()) ? 2 : 1;
+        var bodyZIndex = body && body['z-index'];
+        var depth = (bodyZIndex ? bodyZIndex.depth : defaultDepth) + addLayer;
+        var layer = bodyZIndex ? bodyZIndex.layer : defaultLayer;
 
         // UI for container itself
         // this entity is mounted on rootScene and not mainScene because
         // when this entity is mounted on mainScene then it shakes the player's camera
         self.container = new IgeEntity()
-            .category(`attributeBarsContainer`)
+            .category('attributeBarsContainer')
             .layer(layer)
             .depth(depth)
             .width(self.width)
             .height(self.height + (2 * self.bottomPadding))
-            .mount(ige.client.mainScene);
+            .mount(ige.client.mainScene)
 
         self.container._stats = {
             parentUnit: parentEntity.id()
@@ -50,11 +50,11 @@ let AttributeBarsContainer = IgeEntity.extend({
         }
 
         self._entity.gluedEntities.push({
-            type: `attributeBarsContainer`,
+            type: 'attributeBarsContainer',
             id: self.containerId,
             order: -1
         });
-        self._entity.gluedEntities.sort((gluedEntityA, gluedEntityB) => {
+        self._entity.gluedEntities.sort(function (gluedEntityA, gluedEntityB) {
             return gluedEntityA.order - gluedEntityB.order;
         });
 
@@ -64,14 +64,14 @@ let AttributeBarsContainer = IgeEntity.extend({
     /**
      * @param {number} unitX
      * @param {number} unitY
-     *
+     * 
      * translates attribute bar container to provided x,y location
      */
     translateTo: function (unitX, unitY) {
-        let self = this;
-        let boxX = unitX;
-        let boxY = unitY - (self.height + self.bottomPadding);
-        let container = this.containerId && ige.$(this.containerId);
+        var self = this;
+        var boxX = unitX;
+        var boxY = unitY - (self.height + self.bottomPadding);
+        var container = this.containerId && ige.$(this.containerId);
 
         if (container) {
             container.translateTo(boxX, boxY, 0);
@@ -80,11 +80,11 @@ let AttributeBarsContainer = IgeEntity.extend({
 
     /**
      * @param {number} width
-     *
+     * 
      * updates width of attribute container UI and updates all attributes accordingly
      */
     setContainerWidth: function (width) {
-        let self = this;
+        var self = this;
         self.CONTAINER_WIDTH = self._getValidWidth(width);
         self.width = self.CONTAINER_WIDTH;
 
@@ -93,26 +93,26 @@ let AttributeBarsContainer = IgeEntity.extend({
 
         // change height and width of all attribute bars (both grey and colored section)
         // to match them with new width of attribute bar container
-        for (let attributeId in self.attributeBars) {
-            let attributeBarComponentId = self.attributeBars[attributeId];
-            let attributeData = self.visibleAttributes[attributeId];
-            let attributeBarComponent = attributeBarComponentId && ige.$(attributeBarComponentId);
+        for (var attributeId in self.attributeBars) {
+            var attributeBarComponentId = self.attributeBars[attributeId];
+            var attributeData = self.visibleAttributes[attributeId];
+            var attributeBarComponent = attributeBarComponentId && ige.$(attributeBarComponentId);
 
             if (attributeBarComponent) {
-                let attributeBar = attributeBarComponent._uiEntity;
-                let progressValueInPercent = (attributeData.value / attributeData.max) * 100;
+                var attributeBar = attributeBarComponent._uiEntity;
+                var progressValueInPercent = (attributeData.value / attributeData.max) * 100;
                 progressValueInPercent = Math.max(0, Math.min(100, progressValueInPercent));
 
                 // change height and width of grey section of attribute bar
                 attributeBar.attributeBarContainer.applyStyle({
-                    width: `100%`,
-                    height: attributeBar.barHeight()
+                    width: '100%',
+                    height: attributeBar.barHeight(),
                 });
 
                 // change height and width of colored section of attribute bar
                 attributeBar.attributeBar.applyStyle({
                     height: attributeBar.barHeight(),
-                    width: `${progressValueInPercent}%`
+                    width: progressValueInPercent + '%'
                 });
             }
         }
@@ -123,30 +123,30 @@ let AttributeBarsContainer = IgeEntity.extend({
      * and keeps their ige id in attributeBars object
      */
     _drawAttributeBars: function () {
-        let self = this;
+        var self = this;
 
-        let index = 0;
-        for (let attributeId in self.visibleAttributes) {
-            let attribute = self.visibleAttributes[attributeId];
+        var index = 0;
+        for (var attributeId in self.visibleAttributes) {
+            var attribute = self.visibleAttributes[attributeId];
             attribute.key = attributeId;
-            let attributeBar = new AttributeBarComponent(self.containerId, attribute, index++);
+            var attributeBar = new AttributeBarComponent(self.containerId, attribute, index++);
 
-            self.attributeBars[attributeId] = attributeBar.id();
+            self.attributeBars[attributeId] = attributeBar.id()
         }
     },
 
     /**
      * @param {string} attributeId
      * @param {object} attributeData
-     *
+     * 
      * updates attribute bar which represents {attributeId} as per data provided in {attributeData}
      */
     updateBar: function (attributeId, attributeData) {
-        let self = this;
-        let attributeBarComponentId = self.attributeBars && self.attributeBars[attributeId];
+        var self = this;
+        var attributeBarComponentId = self.attributeBars && self.attributeBars[attributeId];
 
         if (attributeBarComponentId && ige.$(attributeBarComponentId)) {
-            let attributeBarComponent = ige.$(attributeBarComponentId);
+            var attributeBarComponent = ige.$(attributeBarComponentId);
             self.visibleAttributes[attributeId] = attributeData;
             attributeBarComponent.updateBar(attributeData);
         }
@@ -155,12 +155,12 @@ let AttributeBarsContainer = IgeEntity.extend({
     /**
      * @param {number} layer
      * @param {number} depth
-     *
-     * sets z-index of attribute bar container in canvas,
+     * 
+     * sets z-index of attribute bar container in canvas, 
      * z-index in ige is calculated based on depth and layer
      */
     updateZIndex: function (layer, depth) {
-        let self = this;
+        var self = this;
 
         if (depth && layer) {
             self.container
@@ -169,16 +169,16 @@ let AttributeBarsContainer = IgeEntity.extend({
         }
     },
 
-    /**
-     * destroys all attribute bars and removes entry of attirbute bar container from parent entity's
+    /** 
+     * destroys all attribute bars and removes entry of attirbute bar container from parent entity's 
      * gluedEntities list
     */
     destroyAllBars: function () {
-        let self = this;
+        var self = this;
 
-        for (let barId in self.attributeBars) {
-            let attributeBarComponentId = self.attributeBars[barId];
-            let attributeBarComponent = attributeBarComponentId && ige.$(attributeBarComponentId);
+        for (var barId in self.attributeBars) {
+            var attributeBarComponentId = self.attributeBars[barId];
+            var attributeBarComponent = attributeBarComponentId && ige.$(attributeBarComponentId);
 
             if (attributeBarComponent) {
                 attributeBarComponent.destroyBar();
@@ -187,9 +187,9 @@ let AttributeBarsContainer = IgeEntity.extend({
 
         if (self.container) {
             if (self._entity.gluedEntities) {
-                let index = -1;
+                var index = -1;
 
-                self._entity.gluedEntities.forEach((gluedEntity, arrayIndex) => {
+                self._entity.gluedEntities.forEach(function (gluedEntity, arrayIndex) {
                     if (gluedEntity.id === self.container.id()) {
                         index = arrayIndex;
                     }
@@ -207,13 +207,13 @@ let AttributeBarsContainer = IgeEntity.extend({
     /**
      * @param {number} width
      * @return {number}
-     *
+     * 
      * returns valid width for provided {width} value (i.e. width that is in range of 40 to 128)
      */
     _getValidWidth: function (width) {
-        let MAX_WIDTH = 128;
-        let cameraScale = ige.client.vp1.camera._scale.x;
-        let MIN_WIDTH = 50 / cameraScale;
+        var MAX_WIDTH = 128;
+        var cameraScale = ige.client.vp1.camera._scale.x;
+        var MIN_WIDTH = 50 / cameraScale;
 
         if (width < MIN_WIDTH) {
             width = MIN_WIDTH;
@@ -226,6 +226,6 @@ let AttributeBarsContainer = IgeEntity.extend({
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) {
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') {
     module.exports = AttributeBarsContainer;
 }

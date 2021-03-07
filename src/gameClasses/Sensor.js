@@ -1,24 +1,25 @@
-let Sensor = IgeEntityBox2d.extend({
-    classId: `Sensor`,
+var Sensor = IgeEntityBox2d.extend({
+    classId: 'Sensor',
 
     init: function (ownerUnit, radius) {
-        let self = this;
-        self.category(`sensor`);
-        self.ownerUnitId = ownerUnit.id();
+        var self = this;
+        self.category('sensor')
+        self.ownerUnitId = ownerUnit.id()        
         IgeEntityBox2d.prototype.init.call(this, {});
         this.updateRadius(radius);
         if (ige.isServer) {
-            self.mount(ige.$(`baseScene`));
+            self.mount(ige.$('baseScene'));
             this.streamMode(0);
-            this.addBehaviour(`sensorBehaviour`, this._behaviour);
+            this.addBehaviour('sensorBehaviour', this._behaviour);
+        
         }
     },
 
-    getOwnerUnit: function () {
+    getOwnerUnit: function() {
         return ige.$(this.ownerUnitId);
     },
 
-    updateRadius: function (radius) {
+    updateRadius: function(radius) {
         if (radius > 0) {
             // console.log("updatingRadius to", radius)
             this._stats = {
@@ -27,27 +28,25 @@ let Sensor = IgeEntityBox2d.extend({
                     height: radius * 2,
                     bullet: true,
                     fixedRotation: true,
-                    fixtures: [
-                        {
-                            density: 0,
-                            friction: 0,
-                            restitution: 0,
-                            isSensor: true,
-                            shape: {
-                                type: `circle`
-                            }
-                        }
-                    ],
-                    collidesWith: {
+                    fixtures: [{
+                        density: 0,
+                        friction: 0,
+                        restitution: 0,
+                        isSensor: true,
+                        shape: {
+                            type: 'circle'
+                        },
+                    }],
+                    collidesWith : {
                         units: true,
                         items: true
                     }
                 }
             };
 
-            let ownerUnit = ige.$(this.ownerUnitId);
+            var ownerUnit = ige.$(this.ownerUnitId)
             if (ownerUnit) {
-                let defaultData = {
+                var defaultData = { 
                     translate: {
                         x: ownerUnit._translate.x,
                         y: ownerUnit._translate.y
@@ -56,15 +55,15 @@ let Sensor = IgeEntityBox2d.extend({
 
                 this.updateBody(defaultData);
             } else {
-                console.log(`ownerUnit doesn't exist!!`);
+                console.log("ownerUnit doesn't exist!!");
             }
         } else {
-            this.destroyBody();
+            this.destroyBody()
         }
     },
 
     _behaviour: function (ctx) {
-        let ownerUnit = this.getOwnerUnit();
+        var ownerUnit = this.getOwnerUnit();
         if (ownerUnit) {
             if (this.body) {
                 this.translateTo(ownerUnit._translate.x, ownerUnit._translate.y); // keep sensor following its owner unit
@@ -77,4 +76,4 @@ let Sensor = IgeEntityBox2d.extend({
     }
 });
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = Sensor; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = Sensor; }

@@ -1,37 +1,37 @@
 // var app, viewport, world;
-let IgePixiChatBubble = IgeEntity.extend({
-    classId: `IgePixiChatBubble`,
+var IgePixiChatBubble = IgeEntity.extend({
+    classId: 'IgePixiChatBubble',
 
     init: function (chatText, data) {
-        let maxWidth = 230;
-        let maxHeight = 25;
-        let cameraScale = ige.pixi.viewport.scale && ige.pixi.viewport.scale.x;
-        let camera = ige.pixi.viewport;
+        var maxWidth = 230;
+        var maxHeight = 25;
+        var cameraScale = ige.pixi.viewport.scale && ige.pixi.viewport.scale.x;
+        var camera = ige.pixi.viewport;
         this._id = this.id();
-        let container = new PIXI.Container();
+        var container = new PIXI.Container();
 
         this._stats = {
             owner: data.parentUnit,
-            bottomMargin: 15 / cameraScale
+            bottomMargin: 15 / cameraScale,
         };
-        this.category(`chatbubble`);
+        this.category('chatbubble');
 
-        let words = chatText;
+        var words = chatText;
         if (words.length > 40) {
             words = words.substring(0, 40);
-            words += `...`;
+            words += '...';
         }
-        let style = {
-            fill: `#FFFFFF`,
+        var style = {
+            fill: "#FFFFFF",
             // fontFamily: "Verdana",
             fontWeight: 600,
             fontSize: 11,
-            letterSpacing: 0.5
+            letterSpacing: 0.5,
             // stroke: 'black',
             // strokeThickness: 4,
             // fontWeight: "bold"
-        };
-        let text = new PIXI.Text(words, style);
+        }
+        var text = new PIXI.Text(words, style);
 
         maxWidth = text.width;
         maxWidth += 10; // width for rectangle
@@ -43,7 +43,7 @@ let IgePixiChatBubble = IgeEntity.extend({
         text.dirty = true;
 
         // draw rectangle
-        let graphic = new PIXI.Graphics();
+        var graphic = new PIXI.Graphics();
         // graphic.lineStyle(2, 0x000000, 1);
         graphic.beginFill(0x000000, 0.5);
         graphic.drawRoundedRect(0, 0, maxWidth, maxHeight, 5);
@@ -51,7 +51,7 @@ let IgePixiChatBubble = IgeEntity.extend({
         container.addChild(graphic);
 
         // draw triangle
-        let triangle = this.createTriangle(0, 10, 10);
+        var triangle = this.createTriangle(0, 10, 10);
         // triangle.anchor.set(0.5);
         triangle.x = maxWidth / 2 - 5;
         triangle.y = maxHeight;
@@ -62,14 +62,14 @@ let IgePixiChatBubble = IgeEntity.extend({
         // var texture = ige.pixi.app.renderer.generateTexture(container);
         // var sprite = new PIXI.Sprite(texture);
         this.parentUnit = data.parentUnit;
-        let owner = this.getOwner();
+        var owner = this.getOwner();
         // if (owner) {
         container.zIndex = 3;
         container.depth = 10;
         // }
         container.pivot.x = maxWidth / 2;
         container.pivot.y = maxHeight / 2;
-        let offset = this.getOffset();
+        var offset = this.getOffset();
         container.y = offset;
         this._pixiContainer = container;
         this.scaleTo(1 / camera.scale.x, 1 / camera.scale.y, 1);
@@ -83,9 +83,9 @@ let IgePixiChatBubble = IgeEntity.extend({
             1 / ige.pixi.viewport.scale.x,
             1 / ige.pixi.viewport.scale.y,
             1 / ige.pixi.viewport.scale.z
-        );
+        )
     },
-    getOwner: function () {
+    getOwner: function() {
         return ige.$(this.parentUnit);
     },
     updatePosition: function () {
@@ -94,12 +94,12 @@ let IgePixiChatBubble = IgeEntity.extend({
         }
     },
     getOffset: function () {
-        let owner = this.getOwner();
-        let bottomMargin = 20;
-        let nameLabel = null;
+        var owner = this.getOwner();
+        var bottomMargin = 20;
+        var nameLabel = null;
 
-        for (let child of owner._pixiContainer.children) {
-            if (child._category === `floating_text`) {
+        for (var child of owner._pixiContainer.children) {
+            if (child._category === 'floating_text') {
                 nameLabel = child;
                 break;
             }
@@ -112,17 +112,17 @@ let IgePixiChatBubble = IgeEntity.extend({
             return -bottomMargin;
         }
     },
-    createTriangle (xPos, yPos, i) {
-        let triangle = new PIXI.Graphics();
+    createTriangle(xPos, yPos, i) {
+        var triangle = new PIXI.Graphics();
 
         triangle.x = xPos;
         triangle.y = yPos;
 
-        let triangleWidth = 10;
-        let triangleHeight = 5;
-        let triangleHalfway = triangleWidth / 2;
+        var triangleWidth = 10,
+            triangleHeight = 5,
+            triangleHalfway = triangleWidth / 2;
 
-        // draw triangle
+        // draw triangle 
         triangle.beginFill(0x000000, 0.5);
         // triangle.lineStyle(2, 0x000000, 1);
         triangle.moveTo(triangleWidth, 0);
@@ -137,7 +137,7 @@ let IgePixiChatBubble = IgeEntity.extend({
         return triangle;
     },
     fade: function (fadeAfter) {
-        let self = this;
+        var self = this;
         setTimeout(() => {
             var interval = setInterval(function () {
                 if (self._pixiContainer) {
@@ -163,6 +163,6 @@ let IgePixiChatBubble = IgeEntity.extend({
         }
         IgeEntity.prototype.destroy.call(this);
     }
-});
+})
 
-if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = IgePixiChatBubble; }
+if (typeof (module) !== 'undefined' && typeof (module.exports) !== 'undefined') { module.exports = IgePixiChatBubble; }
