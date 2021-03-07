@@ -71,4 +71,4 @@ let igeClientConfig = {
     ]
 };
 
-module.exports = igeClientConfig;
+if (typeof (module) !== `undefined` && typeof (module.exports) !== `undefined`) { module.exports = igeClientConfig; }
