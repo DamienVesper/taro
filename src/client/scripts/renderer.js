@@ -7,4 +7,6 @@ const renderer = new PIXI.Application({
     forceCanvas: false
 });
 
+renderer.scene = new PIXI.Container();
+
 module.exports = renderer;
